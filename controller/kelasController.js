@@ -3,7 +3,7 @@ var supabase = require("../database/supabase")
 
 exports.carisemua = async (req, res, next) => {
     const { data, error } = await supabase.client
-        .from("kajian")
+        .from("kelas")
         .select("*")
 
     if (error) {
@@ -17,7 +17,7 @@ exports.carisemua = async (req, res, next) => {
 
 exports.cari = async (req, res, next) => {
     const { data, error } = await supabase.client
-        .from("kajian")
+        .from("kelas")
         .select("*")
         .limit(10)
         .textSearch("judul", req.query.q, {
@@ -35,7 +35,7 @@ exports.cari = async (req, res, next) => {
 
 exports.select = async (req, res) => {
     const { error, data } = await supabase.client
-    .from("kajian")
+    .from("kelas")
     .select("*")
     .eq(req.query.w, req.query.eq)
 
@@ -48,7 +48,7 @@ exports.select = async (req, res) => {
 
 exports.insert = async (req, res) => {
     const { error } = await supabase.client
-        .from("kajian")
+        .from("kelas")
         .update(req.body)
     if (!error) {
         return res.status(201).send({info: "success"})    
@@ -57,7 +57,7 @@ exports.insert = async (req, res) => {
 
 exports.delete = async (req, res) => {
     const { error } = await supabase.client
-        .from("kajian")
+        .from("kelas")
         .update(req.body)
     if (!error) {
         return res.status(200).send({info: "success"})
