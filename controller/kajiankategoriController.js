@@ -1,22 +1,20 @@
 var exports = module.exports = {}
 var supabase = require("../database/supabase")
 
+// Get All 
 exports.carisemua = async (req, res, next) => {
-    const { data, error } = await supabase.client
+    const { data } = await supabase.client
         .from("kajian_kategori")
         .select("*")
-
-    if (error) {
-        return res.status(500).send({ error: error.message });
-    }
 
     if (data) {
         res.status(200).send(data)
     }
 }
 
+// Get by nama
 exports.cari = async (req, res, next) => {
-    const { data, error } = await supabase.client
+    const { data } = await supabase.client
         .from("kajian_kategori")
         .select("*")
         .limit(10)
@@ -24,15 +22,13 @@ exports.cari = async (req, res, next) => {
             type: "websearch",
             config: "english"
         })
-    if (error) {
-        return res.status(500).send({ error: error.message });
-    }
 
     if (data) {
         res.status(200).send(data)
     }
 }
 
+// Get by column
 exports.select = async (req, res) => {
     const { error, data } = await supabase.client
     .from("kajian_kategori")
@@ -46,20 +42,30 @@ exports.select = async (req, res) => {
     }
 }
 
+// Post data
 exports.insert = async (req, res) => {
-    const { error } = await supabase.client
+    const { data, error } = await supabase.client
         .from("kajian_kategori")
-        .update(req.body)
-    if (!error) {
-        return res.status(201).send({info: "success"})    
+        .insert([req.body])
+        .single()
+        .select("*")
+
+    if (error) {
+        return res.status(201).send({ info: "success", data });
     }
+    return res.status(201).send({ info: "success", data });
 }
 
+// Delete data by id
 exports.delete = async (req, res) => {
-    const { error } = await supabase.client
+    const { data, error } = await supabase.client
         .from("kajian_kategori")
-        .update(req.body)
-    if (!error) {
-        return res.status(200).send({info: "success"})
-    }        
-}
+        .delete()
+        .eq("id_kajian_kategori", req.params.id) // Delete row where id matches
+        .select("*")
+
+    if (error) {
+        return res.status(400).send({ error: error.message });
+    }
+    return res.status(200).send({ info: "success", data });
+};
