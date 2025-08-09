@@ -1,7 +1,5 @@
 var jwt = require("jsonwebtoken")
 var exports = module.exports = {}
-var dotenv = require("dotenv")
-dotenv.config()
 
 exports.auth = async (req, res, next) => {
     try {

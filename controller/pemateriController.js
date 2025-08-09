@@ -1,10 +1,10 @@
 var exports = module.exports = {}
 var supabase = require("../database/supabase")
 
-// Get All
+// Get all data
 exports.carisemua = async (req, res, next) => {
-    const { data } = await supabase.client
-        .from("kajian")
+    const { data, error } = await supabase.client
+        .from("pemateri")
         .select("*")
 
     if (data) {
@@ -12,13 +12,13 @@ exports.carisemua = async (req, res, next) => {
     }
 }
 
-// Get by Judul
+// Get data by nama lengkap
 exports.cari = async (req, res, next) => {
-    const { data } = await supabase.client
-        .from("kajian")
+    const { data, error } = await supabase.client
+        .from("pemateri")
         .select("*")
         .limit(10)
-        .textSearch("judul", req.query.q, {
+        .textSearch("nama_lengkap", req.query.q, {
             type: "websearch",
             config: "english"
         })
@@ -28,11 +28,10 @@ exports.cari = async (req, res, next) => {
     }
 }
 
-// Get by column
 exports.select = async (req, res) => {
     const { error, data } = await supabase.client
-    .from("kajian")
-    .select("kajian_kategori(nama)")
+    .from("pemateri")
+    .select("*")
     .eq(req.query.w, req.query.eq)
 
     if (data) {
@@ -42,10 +41,9 @@ exports.select = async (req, res) => {
     }
 }
 
-// Post data
 exports.insert = async (req, res) => {
     const { data, error } = await supabase.client
-        .from("kajian")
+        .from("pemateri")
         .insert([req.body])
         .single()
         .select("*")
@@ -56,12 +54,11 @@ exports.insert = async (req, res) => {
     return res.status(201).send({ info: "success", data });
 }
 
-// Delete data by id
 exports.delete = async (req, res) => {
     const { data, error } = await supabase.client
-        .from("kajian")
+        .from("pemateri")
         .delete()
-        .eq("id_kajian", req.params.id)
+        .eq("id_pemateri", req.params.id) // Delete row where id matches
         .select("*")
 
     if (error) {

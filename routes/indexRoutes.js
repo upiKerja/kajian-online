@@ -4,7 +4,6 @@ var dotenv = require("dotenv")
 dotenv.config()
 
 router.get("/login/:provider", async (req, res, next) => {
-    console.log("bener ini jir")
     try {
         if (
             process.env.AUTH_PROVIDERS.split(",")

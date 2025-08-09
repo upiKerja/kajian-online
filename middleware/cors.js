@@ -1,6 +1,4 @@
-var dotenv = require("dotenv")
 var exports = module.exports = {}
-dotenv.config()
 
 exports.cors = async (req, res, next) => {
     try {
