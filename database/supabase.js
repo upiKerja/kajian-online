@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
 export const client = createClient(
-    process.env.SUPA, process.env.BASE
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY,
 )

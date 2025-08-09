@@ -1,0 +1,29 @@
+var express = require('express');
+var router = express.Router();
+var dotenv = require("dotenv")
+dotenv.config()
+
+router.get("/login/:provider", async (req, res, next) => {
+    try {
+        if (
+            process.env.AUTH_PROVIDERS.split(",")
+            .indexOf(req.params.provider) !== -1
+        ) {
+            let redirect_url = process.env.SUPABASE_AUTH_URL
+                .replace("PROVIDER", req.params.provider)
+                .replace("REDIRECT_TO", process.env.AUTH_REDIRECT_TO)
+            return res.send({
+                "msg" : "success",
+                "redirect_url" : redirect_url
+            })
+        } else {
+            return res.status(400).send({
+                msg: "Invalid Provider"
+            })
+        }
+    } catch(err) {
+        res.send(err)
+    }
+
+})
+module.exports = router;

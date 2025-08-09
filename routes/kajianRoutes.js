@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require("../controller/kajianController")
+const controller = require("../controller/kelasController")
 
 router.get('/select', controller.select)
 router.get('/cari', controller.cari)

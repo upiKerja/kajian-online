@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require("../database/supabase")
 
-/* GET users listing. */
+/* GET user info. */
 router.get('/', function(req, res, next) {
-  supabase.client
-  res.send('respond with a resource');
+  res.send(req.user)
 });
 
 module.exports = router;
