@@ -6,8 +6,8 @@ var cors = require("./middleware/cors").cors
 var auth = require("./middleware/auth").auth
 
 var indexRouter = require('./routes/indexRoutes');
-var usersRouter = require('./routes/user');
-var kajianRouter = require('./routes/kajian')
+var usersRouter = require('./routes/userRoutes');
+var kajianRouter = require('./routes/kajianRoutes')
 
 var app = express();
 
