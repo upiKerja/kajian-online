@@ -1,10 +1,3 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require("./middleware/cors").cors
-var auth = require("./middleware/auth").auth
-
 // imports
 require('dotenv').config();
 var express = require('express');
@@ -34,7 +27,6 @@ const pemateriRouter = require('./routes/pemateriRoutes')
 
 app.use('/', indexRouter);
 app.use('/user', auth, usersRouter);
-app.use('/user', usersRouter);
 app.use('/kajian', kajianRouter);
 app.use('/kajian/kategori', kajiankategoriRouter)
 app.use('/kelas', kelasRouter);
