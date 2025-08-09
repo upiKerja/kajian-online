@@ -28,8 +28,6 @@ app.use(cors)
 const indexRouter = require('./routes/indexRoutes');
 const usersRouter = require('./routes/userRoutes');
 const kajianRouter = require('./routes/kajianRoutes')
-const usersRouter = require('./routes/userRoutes');
-const kajianRouter = require('./routes/kajianRoutes')
 const kajiankategoriRouter = require('./routes/kajiankategoriRoutes')
 const kelasRouter = require('./routes/kelasRoutes')
 const pemateriRouter = require('./routes/pemateriRoutes')
