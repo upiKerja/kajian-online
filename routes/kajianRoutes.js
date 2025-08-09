@@ -6,5 +6,4 @@ router.get('/select', controller.select)
 router.get('/cari', controller.cari)
 router.post('/insert', controller.insert)
 router.delete('/delete', controller.delete)
-
 module.exports = router;

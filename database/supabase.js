@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv"
+dotenv.config()
 
 export const client = createClient(
-    "https://hggxutlouhypvgmrsjkm.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnZ3h1dGxvdWh5cHZnbXJzamttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NTE2OTAsImV4cCI6MjA3MDEyNzY5MH0.CX683jMxjy-UIHI_3Cy2wq12zFnuN9d20he_nCv8J6c"
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY,
 )
