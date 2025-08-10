@@ -32,7 +32,7 @@ exports.cari = async (req, res, next) => {
 exports.select = async (req, res) => {
     const { error, data } = await supabase.client
     .from("kajian")
-    .select("kajian_kategori(nama)")
+    .select("*")
     .eq(req.query.w, req.query.eq)
 
     if (data) {
@@ -51,7 +51,7 @@ exports.insert = async (req, res) => {
         .select("*")
 
     if (error) {
-        return res.status(201).send({ info: "success", data });
+        return res.status(400).send({ msg: "failed", error: error });
     }
     return res.status(201).send({ info: "success", data });
 }

@@ -51,7 +51,7 @@ exports.insert = async (req, res) => {
         .select("*")
 
     if (error) {
-        return res.status(201).send({ info: "success", data });
+        return res.status(400).send({ msg: "failed", error: error });
     }
     return res.status(201).send({ info: "success", data });
 }
