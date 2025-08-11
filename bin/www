@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('ngaji-online:server');
 var http = require('http');
+var redis = require("redis");
 
 /**
  * Get port from environment and store in Express.
@@ -16,8 +17,25 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTP and redis client.
  */
+const client = redis.createClient({
+  url: 'redis://localhost:6379',
+  socket: {
+    reconnectStrategy: false // disable reconnection
+  }
+});
+
+(async () => {
+  try {
+    await client.connect();
+    app.locals.redis = client;
+    console.log("Redis connected");
+  } catch (err) {
+    console.error("Couldn't connect to Redis, continuing without cache");
+    app.locals.redis = null;
+  }
+})();
 
 var server = http.createServer(app);
 
