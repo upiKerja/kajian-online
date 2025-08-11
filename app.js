@@ -23,13 +23,13 @@ const usersRouter = require('./routes/userRoutes');
 const kajianRouter = require('./routes/kajianRoutes')
 const kajiankategoriRouter = require('./routes/kajiankategoriRoutes')
 const kelasRouter = require('./routes/kelasRoutes')
-const pemateriRouter = require('./routes/pemateriRoutes')
+const penggunaRouter = require('./routes/penggunaRoutes')
 
 app.use('/', indexRouter);
 app.use('/user', auth, usersRouter);
 app.use('/kajian', kajianRouter);
 app.use('/kajian/kategori', kajiankategoriRouter)
 app.use('/kelas', kelasRouter);
-app.use('/pemateri', pemateriRouter)
+app.use('/pengguna', penggunaRouter)
 
 module.exports = app;

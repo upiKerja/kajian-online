@@ -1,12 +1,12 @@
 var exports = module.exports = {}
 var supabase = require("../database/supabase")
-var table = "kelas"
+var table = "pengguna"
 var table_id = "id_" + table
 
 exports.carisemua = async (req, res, next) => {
     const { data, error } = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
+        .select("*")
 
     if (data === null || (Array.isArray(data) && data.length === 0)) {
         return res.status(404).send({
@@ -25,7 +25,7 @@ exports.carisemua = async (req, res, next) => {
 exports.cari = async (req, res, next) => {
     const { data, error } = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
+        .select("*")
         .limit(10)
         .textSearch("judul", req.query.q, {
             type: "websearch",
@@ -69,7 +69,7 @@ exports.select = async (req, res) => {
 exports.indexes = async (req, res) => {
     const { data, error } = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
+        .select("*")
         .limit(1)
         .eq("slug", req.params.slug)
 
