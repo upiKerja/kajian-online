@@ -1,10 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { cache } = require("../middleware/cache");
-const auth_mentor = require("../middleware/auth").auth_mentor
+const { auth, auth_mentor, auth_admin} = require("../middleware/auth")
 
 /* GET user info. */
-router.get('/', auth_mentor, cache, function(req, res, next) {
+router.get('/', auth, cache, function(req, res, next) {
+  res.send(req.user)
+});
+
+router.get('/admin', auth_admin, cache, function(req, res, next) {
+  res.send(req.user)
+});
+
+router.get('/mentor', auth_mentor, cache, function(req, res, next) {
   res.send(req.user)
 });
 
