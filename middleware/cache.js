@@ -7,28 +7,18 @@ exports.cache = async (req, res, next) => {
     }
 
     try {
-        const userKeyPart = req.internalUserId || "guest";
-        const cacheKey = `${userKeyPart}:${req.originalUrl}`;
-
-        const keyTTL = await redis.ttl(cacheKey);
-        if (keyTTL === -2 || keyTTL === -1) {
-            console.log(`Cache expired for: ${cacheKey}`);
-        } else {
-            console.log(`TTL for ${cacheKey}: ${keyTTL}s`);
-        }
-        
-        const cacheData = await redis.get(cacheKey);
+        const cacheData = await redis.get(req.originalUrl);
         if (cacheData) {
-            console.log("Cache hit:", cacheKey);
+            console.log("Cache hit:", req.originalUrl);
             return res.send(JSON.parse(cacheData));
         }
-        console.log("Cache miss:", cacheKey);
+        console.log("Cache miss:", req.originalUrl);
 
-        const originalSend = res.send.bind(res);
-        res.send = (body) => {
-            redis.set(cacheKey, JSON.stringify(body), {EX : 1800 }); // 30 minute
-            console.log("Cache set for:", cacheKey);
-            return originalSend(body);
+        const originalJson = res.json.bind(res);
+        res.json = (body) => {
+            redis.set(req.originalUrl, JSON.stringify(body), {EX : 1800 }); // Cache for 30 Minutes
+            console.log("Cache set for:", req.originalUrl);
+            return originalJson(body);
         };
 
         next();
@@ -46,4 +36,35 @@ exports.invalidateUserCache = async (redis, userId, routePath) => {
     const keyPattern = `${userId}:${routePath}`;
     await redis.del(keyPattern);
     console.log(`Cache invalidated for ${keyPattern}`);
+};
+
+
+exports.get_or_set_for_auth = async (req, key, val) => {
+    let pal;
+    const redis = req.app.locals.redis;
+    if (!redis || !redis.isOpen) {
+        console.warn("Redis is not connected. Skipping cache middleware.");
+        pal = await val()
+        return pal.data.role.replace(/"/g, '');
+    }
+
+    try {
+        const cacheData = await redis.get(key);
+        if (cacheData) {
+            console.log("Cache hit:", key);
+            return JSON.parse(cacheData);
+        }
+        console.log("Cache miss:", key);
+
+        // Set
+        pal = await val()
+        console.log(pal)
+        await redis.set(key, JSON.stringify(pal.data.role), 'EX', 3600);
+        console.log("Cache set for:", key);
+        return pal.data.role.replace(/"/g, '');
+
+    } catch (err) {
+        console.error("Redis error:", err);
+        return "rijal";
+    }
 };
