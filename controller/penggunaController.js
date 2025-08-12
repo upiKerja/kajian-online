@@ -27,7 +27,7 @@ exports.cari = async (req, res, next) => {
         .from(table)
         .select("*")
         .limit(10)
-        .textSearch("judul", req.query.q, {
+        .textSearch("nama_lengkap", req.query.q, {
             type: "websearch",
             config: "english"
         })
@@ -109,19 +109,9 @@ exports.update = async (req, res) => {
     if (redis && redis.isOpen) {
       // Assume req.params.id is user ID (id_pengguna)
       const userId = req.params.id;
+      const deleted = await redis.del(userId);
+      console.log(deleted ? `Cache invalidated: ${userId}` : `No cache found for: ${userId}`);
 
-      // Define the cache keys you want to invalidate
-      const cacheKeys = [
-        `${userId}:/user`,
-        `${userId}:/user/mentor`,
-        `${userId}:/user/admin`,
-      ];
-
-      // Delete each key
-      for (const key of cacheKeys) {
-        const deleted = await redis.del(key);
-        console.log(deleted ? `Cache invalidated: ${key}` : `No cache found for: ${key}`);
-      }
     } else {
       console.warn("Redis not connected. Cache not invalidated.");
     }
