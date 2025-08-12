@@ -1,5 +1,3 @@
-var exports = module.exports = {}
-
 exports.cache = async (req, res, next) => {
     const redis = req.app.locals.redis;
 
@@ -9,18 +7,27 @@ exports.cache = async (req, res, next) => {
     }
 
     try {
+        const userKeyPart = req.internalUserId || "guest";
+        const cacheKey = `${userKeyPart}:${req.originalUrl}`;
 
-        const cacheData = await redis.get(req.originalUrl);
+        const keyTTL = await redis.ttl(cacheKey);
+        if (keyTTL === -2 || keyTTL === -1) {
+            console.log(`Cache expired for: ${cacheKey}`);
+        } else {
+            console.log(`TTL for ${cacheKey}: ${keyTTL}s`);
+        }
+        
+        const cacheData = await redis.get(cacheKey);
         if (cacheData) {
-            console.log("Cache hit:", req.originalUrl);
+            console.log("Cache hit:", cacheKey);
             return res.send(JSON.parse(cacheData));
         }
-        console.log("Cache miss:", req.originalUrl);
+        console.log("Cache miss:", cacheKey);
 
         const originalSend = res.send.bind(res);
         res.send = (body) => {
-            redis.set(req.originalUrl, JSON.stringify(body), 'EX', 3600); // Cache for 1 hour
-            console.log("Cache set for:", req.originalUrl);
+            redis.set(cacheKey, JSON.stringify(body), {EX : 1800 }); // 30 minute
+            console.log("Cache set for:", cacheKey);
             return originalSend(body);
         };
 
@@ -29,4 +36,14 @@ exports.cache = async (req, res, next) => {
         console.error("Redis error:", err);
         next();
     }
+};
+
+exports.invalidateUserCache = async (redis, userId, routePath) => {
+    if (!redis || !redis.isOpen) {
+        console.warn("Redis is not connected. Cannot invalidate cache.");
+        return;
+    }
+    const keyPattern = `${userId}:${routePath}`;
+    await redis.del(keyPattern);
+    console.log(`Cache invalidated for ${keyPattern}`);
 };

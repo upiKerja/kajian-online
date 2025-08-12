@@ -88,24 +88,59 @@ exports.indexes = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
+  try {
     const { data, error } = await supabase.client
-        .from(table)
-        .update(req.body)
-        .eq(table_id, req.params.id)
+      .from(table)
+      .update(req.body)
+      .eq(table_id, req.params.id)
+      .select(); // to get updated data
 
-    if (!error) {
-        return res.status(200).send({
-            message: "success",
-            status: "success",
-            data: data
-        })
-    }
-    return res.status(404).send({
+    if (error) {
+      return res.status(404).send({
         message: "data tidak ditemukan",
         status: "failed",
-        error: error
-    })
-}
+        error: error,
+      });
+    }
+
+    // Access Redis client
+    const redis = req.app.locals.redis;
+
+    if (redis && redis.isOpen) {
+      // Assume req.params.id is user ID (id_pengguna)
+      const userId = req.params.id;
+
+      // Define the cache keys you want to invalidate
+      const cacheKeys = [
+        `${userId}:/user`,
+        `${userId}:/user/mentor`,
+        `${userId}:/user/admin`,
+      ];
+
+      // Delete each key
+      for (const key of cacheKeys) {
+        const deleted = await redis.del(key);
+        console.log(deleted ? `Cache invalidated: ${key}` : `No cache found for: ${key}`);
+      }
+    } else {
+      console.warn("Redis not connected. Cache not invalidated.");
+    }
+
+    return res.status(200).send({
+      message: "success",
+      status: "success",
+      data: data,
+    });
+  } catch (err) {
+    console.error("Update error:", err);
+    return res.status(500).send({
+      message: "Internal server error",
+      status: "failed",
+      error: err.message || err,
+    });
+  }
+};
+
 
 exports.insert = async (req, res) => {
     const { data, error } = await supabase.client
