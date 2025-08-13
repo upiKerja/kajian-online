@@ -31,7 +31,7 @@ router.get("/profile", auth, cache, async (req, res) => {
     const { data } = await client
         .from("pengguna")
         .select("*, log_kelas(kelas(slug, judul, status, link_kelas))")
-        .eq("id_pengguna", "3f253779-f7d5-4496-8cf0-bd79ddbcf55a")
+        .eq("id_pengguna", req.internalUserId)
         .single()
 
     res.send(data)

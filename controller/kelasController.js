@@ -1,5 +1,4 @@
 var exports = module.exports = {}
-const { resource } = require("../app")
 var supabase = require("../database/supabase")
 var table = "kelas"
 var table_id = "id_" + table
@@ -122,7 +121,9 @@ exports.insert = async (req, res) => {
             error: response.error
         });
     }
-    return res.status(201).send({ info: "success", data });
+    return res.status(response.status).send(
+        ({ message: response.statusText, data: response.data })
+    );
 }
 
 exports.delete = async (req, res) => {

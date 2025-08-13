@@ -69,9 +69,9 @@ exports.select = async (req, res) => {
 exports.indexes = async (req, res) => {
     const { data, error } = await supabase.client
         .from(table)
-        .select("*")
+        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
         .limit(1)
-        .eq("slug", req.params.slug)
+        .eq("slug", req.params.slug_kajian)
 
     if (data === null || (Array.isArray(data) && data.length === 0)) {
         return res.status(404).send({
@@ -88,58 +88,58 @@ exports.indexes = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
         .update(req.body)
-        .eq(table_id, req.params.id)
+        .eq(table_id, req.id_kajian)
 
-    if (!error) {
-        return res.status(200).send({
-            message: "success",
+    if (!response.error) {
+        return res.status(response.status).send({
+            message: response.statusText,
             status: "success",
-            data: data
+            data: response.data
         })
     }
-    return res.status(404).send({
-        message: "data tidak ditemukan",
+    return res.status(response.status).send({
+        message: response.statusText,
         status: "failed",
-        error: error
+        error: response.error
     })
 }
 
 exports.insert = async (req, res) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
         .insert([req.body])
         .single()
         .select("*")
 
-    if (error) {
-        return res.status(400).send({
-            message: error.message,
+    if (response.error) {
+        return res.status(response.status).send({
+            message: response.statusText,
             status: "failed",
-            error: error
+            error: response.error
         });
     }
     return res.status(201).send({ info: "success", data });
 }
 
 exports.delete = async (req, res) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
         .delete()
-        .eq(table_id, req.params.id)
+        .eq(table_id, req.params.id_kajian)
         .select("*")
 
-    if (error) {
+    if (response.error) {
         return res.status(400).send({
-            message: error.message,
+            message: response.statusText,
             status: "failed",
-            error: error
+            error: response.error
         });
     }
-    return res.status(200).send({
+    return res.status(response.status).send({
         message: "success",
         status: "success",
-        data : data});
+        data : response.data});
 };
