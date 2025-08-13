@@ -8,7 +8,6 @@ const baseAuth = async (req, res, next, roleCheck = null) => {
     const user = jwt.verify(req.cookies.access_token, process.env.SUPABASE_JWT_KEY);
     
     const role = await cache(req, user.sub, async () => {
-      console.log("ngirimjir")
       return await supabase
         .from("pengguna")
         .select("role")
@@ -44,10 +43,37 @@ const baseAuth = async (req, res, next, roleCheck = null) => {
   }
 };
 
-exports.auth = (req, res, next) => baseAuth(req, res, next);
+exports.auth = (req, res, next) =>
+  baseAuth(req, res, next);
 
 exports.auth_mentor = (req, res, next) => 
   baseAuth(req, res, next, (role) => role !== "biasa");
 
 exports.auth_admin = (req, res, next) => 
   baseAuth(req, res, next, (role) => role === "admin");
+
+// Middleware setelah auth_mentor.
+exports.authenticated_mentor = async (req, res, next) => {
+  if (!req.params.id_kelas) {
+    next() 
+  }
+
+  // Biar up to date.
+  let response = await supabase
+    .from("kelas")
+    .select("id_mentor")
+    .eq("id_kelas", req.params.id_kelas)
+    .single()
+  
+  console.log(response.data.id_mentor)
+  console.log(req.internalUserId)
+
+  if (response.data.id_mentor === req.internalUserId) {
+    console.log("rijal")
+    return next()
+  }
+
+  res.status(403).send({
+    message: "Invalid credentials"
+  })
+}
