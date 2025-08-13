@@ -27,7 +27,7 @@ const kelasRouter = require('./routes/kelasRoutes')
 const penggunaRouter = require('./routes/penggunaRoutes')
 
 app.use('/', indexRouter);
-app.use('/user', auth, usersRouter);
+app.use('/user', usersRouter);
 app.use('/kajian', kajianRouter);
 app.use('/kajian/kategori', kajiankategoriRouter)
 app.use('/kelas', kelasRouter);
