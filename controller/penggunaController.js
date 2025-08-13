@@ -88,6 +88,10 @@ exports.indexes = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
+    if(req.body.role) {
+        return res.status(403).send("Mau ngapain lo anjing 😡")
+    }
+
     const response = await supabase.client
         .from(table)
         .update(req.body)
