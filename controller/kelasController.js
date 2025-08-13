@@ -143,3 +143,16 @@ exports.delete = async (req, res) => {
         status: "success",
         data : data});
 };
+
+exports.daftar = async (req, res) => {
+    const response = await supabase.client
+        .from("log_kelas")
+        .insert({
+            id_pengguna: req.internalUserId,
+            id_kelas: req.params.id_kelas
+        })
+
+    res.status(response.status).send({
+        message: response.statusText
+    })    
+}

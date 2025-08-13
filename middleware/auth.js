@@ -31,7 +31,7 @@ const baseAuth = async (req, res, next, roleCheck = null) => {
     }
 
     req.user = user.user_metadata;
-    req.internalUserId = "id_pengguna";
+    req.internalUserId = user.sub;
     req.userRole = role;
     next();
 

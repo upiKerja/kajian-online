@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var dotenv = require("dotenv")
-dotenv.config()
+var router = require('express').Router();
+var { auth } = require('../middleware/auth')
+var { client } = require("../database/supabase");
+const { cache } = require('../middleware/cache');
 
 router.get("/login/:provider", async (req, res, next) => {
     try {
@@ -26,4 +26,15 @@ router.get("/login/:provider", async (req, res, next) => {
     }
 
 })
+
+router.get("/profile", auth, cache, async (req, res) => {
+    const { data } = await client
+        .from("pengguna")
+        .select("*, log_kelas(kelas(slug, judul, status, link_kelas))")
+        .eq("id_pengguna", "3f253779-f7d5-4496-8cf0-bd79ddbcf55a")
+        .single()
+
+    res.send(data)
+})
+
 module.exports = router;
