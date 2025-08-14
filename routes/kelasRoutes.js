@@ -7,13 +7,13 @@ const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../midd
 // Guess
 router.get('/index/:slug_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
-router.get('/carisemua', cache, controller.carisemua)
 
 // User
 router.post('/daftar/:id_kelas', auth, controller.insert)
 
 // Admin
 router.get('/select', auth_admin, controller.select)
+router.get('/carisemua', auth_admin, controller.carisemua)
 router.post('/insert', auth_admin, controller.insert)
 router.delete('/delete/:id_kelas', auth_admin, controller.delete)
 
