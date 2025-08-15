@@ -12,8 +12,8 @@ exports.cors = async (req, res, next) => {
           })
         }
 
-        res.set("Access-Controll-Allow-Origin", req.headers.origin)
-        res.set("Access-Controll-Allow-Credentials", "true")
+        res.set("Access-Control-Allow-Origin", req.headers.origin)
+        res.set("Access-Control-Allow-Credentials", "true")
         res.set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 
         return next()
