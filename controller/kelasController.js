@@ -87,7 +87,40 @@ exports.indexes = async (req, res) => {
     })
 }
 
+exports.sudoUpdate = async (req, res) => {
+    // Route Update khusus Admin
+    const response = await supabase.client
+        .from(table)
+        .update(req.body)
+        .eq(table_id, req.params.id_kelas)
+
+    if (!response.error) {
+        return res.status(response.status).send({
+            message: response.statusText,
+            status: "success",
+            data: response.data
+        })
+    }
+    return res.status(response.status).send({
+        message: response.statusText,
+        status: "failed",
+        error: response.error
+    })    
+}
+
 exports.update = async (req, res) => {
+    // Route Update khusus authenticated mentor
+
+    // Jaga-jaga kalo mau ngupdate Judul
+    if (req.body.judul) {
+        req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
+    } 
+
+    // Data yang gaboleh di Update
+    const {is_accepted, id_mentor, id_kelas, ...inih} = req.body
+    req.body.is_accepted = false // Data yang udah diupdate harus di ACC lebih dulu ama Admin.
+    req.body = inih
+
     const response = await supabase.client
         .from(table)
         .update(req.body)
@@ -108,10 +141,17 @@ exports.update = async (req, res) => {
 }
 
 exports.insert = async (req, res) => {
+    if (req.body.judul) {
+        req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
+    } 
+    
+    const {is_accepted, ...inih} = req.body
+    req.body = inih
+    req.body.id_mentor = req.internalUserId
+
     const response = await supabase.client
         .from(table)
-        .insert([req.body])
-        .single()
+        .insert(req.body)
         .select("*")
 
     if (response.error) {

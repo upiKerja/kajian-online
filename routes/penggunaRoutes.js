@@ -8,8 +8,9 @@ const { auth, auth_admin } = require("../middleware/auth");
 router.get('/cari', cache, controller.cari)
 
 // Admin
-router.get('/select', auth_admin, cache, controller.select)
-router.get('/carisemua', auth_admin, cache, controller.carisemua)
+router.get('/select', auth_admin, controller.select)
+router.get('/carisemua', auth_admin, controller.carisemua)
+router.put('/setrole/id_pengguna', auth_admin, controller.setRole)
 
 // User
 router.delete('/delete', auth, controller.delete)

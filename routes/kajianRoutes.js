@@ -10,7 +10,7 @@ router.get('/cari', cache, controller.cari)
 
 // Admin
 router.get('/select', auth_admin, controller.select)
-router.get('/carisemua', cache, controller.carisemua)
+router.get('/carisemua', auth_admin, controller.carisemua)
 router.post('/insert', auth_admin, controller.insert)
 router.put('/update/:id_kajian', auth_admin, controller.update)
 router.delete('/delete/:id_kajian', auth_admin, controller.delete)
