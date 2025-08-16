@@ -69,9 +69,9 @@ exports.select = async (req, res) => {
 exports.indexes = async (req, res) => {
     const { data, error } = await supabase.client
         .from(table)
-        .select("*")
+        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
         .limit(1)
-        .eq("slug", req.params.slug)
+        .eq("slug", req.params.slug_kajian)
 
     if (data === null || (Array.isArray(data) && data.length === 0)) {
         return res.status(404).send({
@@ -88,83 +88,67 @@ exports.indexes = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-  try {
-    const { data, error } = await supabase.client
-      .from(table)
-      .update(req.body)
-      .eq(table_id, req.params.id)
-      .select(); // to get updated data
+    // Route khusus Authenticated User
+    
+    // Role gaboleh di Update
+    const {role, ...inih} = req.body
+    req.body = inih
 
-    if (error) {
-      return res.status(404).send({
-        message: "data tidak ditemukan",
-        status: "failed",
-        error: error,
-      });
-    }
-
-    // Access Redis client
-    const redis = req.app.locals.redis;
-
-    if (redis && redis.isOpen) {
-      // Assume req.params.id is user ID (id_pengguna)
-      const userId = req.params.id;
-      const deleted = await redis.del(userId);
-      console.log(deleted ? `Cache invalidated: ${userId}` : `No cache found for: ${userId}`);
-
-    } else {
-      console.warn("Redis not connected. Cache not invalidated.");
-    }
-
-    return res.status(200).send({
-      message: "success",
-      status: "success",
-      data: data,
-    });
-  } catch (err) {
-    console.error("Update error:", err);
-    return res.status(500).send({
-      message: "Internal server error",
-      status: "failed",
-      error: err.message || err,
-    });
-  }
-};
-
-
-exports.insert = async (req, res) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
-        .insert([req.body])
-        .single()
-        .select("*")
+        .update(req.body)
+        .eq(table_id, req.internalUserId)
 
-    if (error) {
-        return res.status(400).send({
-            message: error.message,
-            status: "failed",
-            error: error
-        });
+    if (!response.error) {
+        return res.status(response.status).send({
+            message: response.statusText,
+            status: "success",
+            data: response.data
+        })
     }
-    return res.status(201).send({ info: "success", data });
+    return res.status(response.status).send({
+        message: response.statusText,
+        status: "failed",
+        error: response.error
+    })
 }
 
 exports.delete = async (req, res) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
         .delete()
-        .eq(table_id, req.params.id)
+        .eq(table_id, req.params.internalUserId)
         .select("*")
 
-    if (error) {
+    if (response.error) {
         return res.status(400).send({
-            message: error.message,
+            message: response.statusText,
             status: "failed",
-            error: error
+            error: response.error
         });
     }
-    return res.status(200).send({
+    return res.status(response.status).send({
         message: "success",
         status: "success",
-        data : data});
+        data : response.data});
 };
+
+exports.setRole = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .update({role: req.body.role})
+        .eq(table_id, req.params.id_pengguna)
+
+    if (!response.error) {
+        return res.status(response.status).send({
+            message: response.statusText,
+            status: "success",
+            data: response.data
+        })
+    }
+    return res.status(response.status).send({
+        message: response.statusText,
+        status: "failed",
+        error: response.error
+    })
+}

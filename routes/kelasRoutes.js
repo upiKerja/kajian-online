@@ -2,15 +2,25 @@ const express = require('express');
 const router = express.Router();
 const controller = require("../controller/kelasController")
 const { cache } = require("../middleware/cache");
-const { auth } = require("../middleware/auth")
+const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../middleware/auth")
 
-router.get('/index/:slug', cache, controller.indexes)
-router.get('/select', cache, controller.select)
+// Guess
+router.get('/index/:slug_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
-router.get('/carisemua', cache, controller.carisemua)
-router.post('/insert', controller.insert)
-router.put('/update/:id', controller.update)
-router.delete('/delete/:id', controller.delete)
-router.post('/daftar/:id_kelas', auth, controller.daftar)
+
+// User
+router.post('/daftar/:id_kelas', auth, controller.insert)
+
+// Admin
+router.get('/select', auth_admin, controller.select)
+router.get('/carisemua', auth_admin, controller.carisemua)
+router.put('/sudo/update/:id_kelas', auth_admin, controller.sudoUpdate)
+router.delete('/delete/:id_kelas', auth_admin, controller.delete)
+
+// Mentor
+router.post('/insert', auth_mentor, controller.insert)
+
+// Authenticated Mentor
+router.put('/update/:id_kelas', auth_mentor, authenticated_mentor, controller.update)
 
 module.exports = router;

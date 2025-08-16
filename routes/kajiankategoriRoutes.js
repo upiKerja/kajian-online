@@ -3,6 +3,10 @@ const router = express.Router();
 const controller = require("../controller/kajiankategoriController")
 const { cache } = require("../middleware/cache");
 
+/*
+    Bakal Depre nich. Jann di pake.
+*/
+
 router.get('/index/:slug', cache, controller.indexes)
 router.get('/select', cache, controller.select)
 router.get('/cari', cache, controller.cari)
