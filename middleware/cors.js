@@ -11,6 +11,11 @@ exports.cors = async (req, res, next) => {
             "msg" : "Invalid CORS"
           })
         }
+
+        res.set("Access-Control-Allow-Origin", req.headers.origin)
+        res.set("Access-Control-Allow-Credentials", "true")
+        res.set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+
         return next()
     } catch(err) {
         return res.status(503).send({

@@ -88,9 +88,11 @@ exports.indexes = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-    if(req.body.role) {
-        return res.status(403).send("Mau ngapain lo anjing 😡")
-    }
+    // Route khusus Authenticated User
+    
+    // Role gaboleh di Update
+    const {role, ...inih} = req.body
+    req.body = inih
 
     const response = await supabase.client
         .from(table)
@@ -130,3 +132,23 @@ exports.delete = async (req, res) => {
         status: "success",
         data : response.data});
 };
+
+exports.setRole = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .update({role: req.body.role})
+        .eq(table_id, req.params.id_pengguna)
+
+    if (!response.error) {
+        return res.status(response.status).send({
+            message: response.statusText,
+            status: "success",
+            data: response.data
+        })
+    }
+    return res.status(response.status).send({
+        message: response.statusText,
+        status: "failed",
+        error: response.error
+    })
+}

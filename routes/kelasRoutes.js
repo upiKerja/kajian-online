@@ -15,9 +15,12 @@ router.post('/daftar/:id_kelas', auth, controller.insert)
 // Admin
 router.get('/select', auth_admin, controller.select)
 router.get('/carisemua', auth_admin, controller.carisemua)
+router.put('/sudo/update/:id_kelas', auth_admin, controller.sudoUpdate)
 router.put('/accept/:id_kelas', auth_admin, controller.accept)
-router.post('/insert', auth_admin, controller.insert)
 router.delete('/delete/:id_kelas', auth_admin, controller.delete)
+
+// Mentor
+router.post('/insert', auth_mentor, controller.insert)
 
 // Authenticated Mentor
 router.put('/update/:id_kelas', auth_mentor, authenticated_mentor, controller.update)
