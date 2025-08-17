@@ -10,7 +10,7 @@ router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
 
 // User
-router.post('/daftar/:id_kelas', auth, controller.insert)
+router.post('/daftar/:id_kelas', auth, controller.daftar)
 
 // Admin
 router.get('/select', auth_admin, controller.select)
