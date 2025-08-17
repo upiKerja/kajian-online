@@ -4,87 +4,64 @@ var table = "kelas"
 var table_id = "id_" + table
 
 exports.carisemua = async (req, res, next) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
+        .select("*, pengguna(nama_lengkap, foto_url)")
 
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        return res.status(404).send({
-            message: "data tidak ditemukan",
-            status: "failed",
-            error: error
-        })
-    }
-    return res.status(200).send({
-        message: "success",
-        status: "success",
-        data: data
-    })
+    return res.status(response.status).send(response)
+}
+
+exports.discover = async (req, res) => {
+    const response = await supabase.client
+        .from("kelas")
+        .select("*, pengguna(nama_lengkap, foto_url)")
+        .eq("is_accepted", false)
+        .limit(100)
+
+    return res.status(response.status).send(response)
+}
+
+exports.accept = async(req, res) => {
+    const response = await supabase.client
+        .from("kelas")
+        .update({is_accepted: true})
+        .eq("id_kelas", req.params.id_kelas)
+        .single()
+
+    return res.status(response.status).send(response)    
 }
 
 exports.cari = async (req, res, next) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
+        .select("judul, slug, pengguna(nama_lengkap, foto_url)")
+        .eq("is_accepted", true)
         .limit(10)
         .textSearch("judul", req.query.q, {
             type: "websearch",
             config: "english"
         })
 
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        return res.status(404).send({
-            message: "data tidak ditemukan",
-            status: "failed",
-            error: error
-        })
-    }
-    return res.status(200).send({
-        message: "success",
-        status: "success",
-        data: data
-    })
+    return res.status(response.status).send(response)
 }
 
 exports.select = async (req, res) => {
-    const { error, data } = await supabase.client
-    .from(table)
-    .select("*")
-    .eq(req.query.w, req.query.eq)
+    const response = await supabase.client
+        .from(table)
+        .select("*")
+        .eq(req.query.w, req.query.eq)
 
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        return res.status(404).send({
-            message: "data tidak ditemukan",
-            status: "failed",
-            error: error
-        })
-    }
-    return res.status(200).send({
-        message: "success",
-        status: "success",
-        data: data
-    })
+    return res.status(response.status).send(response)
 }
 
 exports.indexes = async (req, res) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
-        .limit(1)
+        .select("*, pengguna(nama_lengkap, foto_url)")
+        .single()
         .eq("slug", req.params.slug_kelas)
 
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        return res.status(404).send({
-            message: "data tidak ditemukan",
-            status: "failed",
-            error: error
-        })
-    }
-    return res.status(200).send({
-        message: "success",
-        status: "success",
-        data: data[0]
-    })
+    return res.status(response.status).send(response)
 }
 
 exports.update = async (req, res) => {
@@ -93,18 +70,7 @@ exports.update = async (req, res) => {
         .update(req.body)
         .eq(table_id, req.params.id_kelas)
 
-    if (!response.error) {
-        return res.status(response.status).send({
-            message: response.statusText,
-            status: "success",
-            data: response.data
-        })
-    }
-    return res.status(response.status).send({
-        message: response.statusText,
-        status: "failed",
-        error: response.error
-    })
+    return res.status(response.status).send(response)
 }
 
 exports.insert = async (req, res) => {
@@ -114,16 +80,7 @@ exports.insert = async (req, res) => {
         .single()
         .select("*")
 
-    if (response.error) {
-        return res.status(response.status).send({
-            message: response.statusText,
-            status: "failed",
-            error: response.error
-        });
-    }
-    return res.status(response.status).send(
-        ({ message: response.statusText, data: response.data })
-    );
+    return res.status(response.status).send(response)
 }
 
 exports.delete = async (req, res) => {
@@ -133,17 +90,7 @@ exports.delete = async (req, res) => {
         .eq(table_id, req.params.id)
         .select("*")
 
-    if (response.error) {
-        return res.status(400).send({
-            message: response.statusText,
-            status: "failed",
-            error: response.error
-        });
-    }
-    return res.status(response.status).send({
-        message: "success",
-        status: "success",
-        data : response.data});
+    return res.status(response.status).send(response)
 };
 
 exports.daftar = async (req, res) => {
@@ -154,7 +101,5 @@ exports.daftar = async (req, res) => {
             id_kelas: req.params.id_kelas
         })
 
-    res.status(response.status).send({
-        message: response.statusText
-    })    
+    return res.status(response.status).send(response)
 }
