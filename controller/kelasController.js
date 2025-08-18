@@ -15,8 +15,8 @@ exports.discover = async (req, res) => {
     const response = await supabase.client
         .from("kelas")
         .select("*, pengguna(nama_lengkap, foto_url)")
-        .eq("is_accepted", false)
-        .limit(100)
+        .eq("is_accepted", true)
+        .limit(req.query.limit || 20)
 
     return res.status(response.status).send(response)
 }
