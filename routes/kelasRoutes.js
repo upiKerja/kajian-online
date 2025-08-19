@@ -11,6 +11,7 @@ router.get('/discover', cache, controller.discover)
 
 // User
 router.post('/daftar/:id_kelas', auth, controller.daftar)
+router.get('/:slug_kelas/pertemuan', auth)
 
 // Admin
 router.get('/select', auth_admin, controller.select)
