@@ -1,7 +1,7 @@
 var exports = module.exports = {}
 var supabase = require("../database/supabase")
 var table = "program_donasi"
-var table_id = "id_" + table
+var table_id = "id_" + table    
 
 exports.carisemua = async (req, res, next) => {
     const response = await supabase.client
@@ -122,7 +122,7 @@ exports.delete = async (req, res) => {
     return res.status(response.status).send(response)
 };
 
-exports.daftar = async (req, res) => {
+exports.donasi = async (req, res) => {
     const response = await supabase.client
         .from("log_kelas")
         .insert({
