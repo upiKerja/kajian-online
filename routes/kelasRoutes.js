@@ -5,13 +5,13 @@ const { cache } = require("../middleware/cache");
 const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../middleware/auth")
 
 // Guess
-router.get('/index/:slug_kelas', cache, controller.indexes)
+router.get('/index/:id_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
 
 // User
 router.post('/daftar/:id_kelas', auth, controller.daftar)
-router.get('/:slug_kelas/pertemuan', auth)
+router.get('/index/:id_kelas/pertemuan', auth, controller.pertemuan_kelas)
 
 // Admin
 router.get('/select', auth_admin, controller.select)

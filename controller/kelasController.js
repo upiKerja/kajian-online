@@ -21,6 +21,15 @@ exports.discover = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
+exports.pertemuan_kelas = async (req, res) => {
+    const response = await supabase.client
+        .from("pertemuan_kelas")
+        .select("judul, id_pertemuan_kelas, slug_pertemuan_kelas, deskripsi", { count: "exact" })
+        .eq("id_kelas", req.params.id_kelas)
+    
+    return res.status(response.status).send(response)   
+}
+
 exports.accept = async(req, res) => {
     const response = await supabase.client
         .from("kelas")
@@ -59,7 +68,7 @@ exports.indexes = async (req, res) => {
         .from(table)
         .select("*, pengguna(nama_lengkap, foto_url)")
         .single()
-        .eq("slug", req.params.slug_kelas)
+        .eq("id_kelas", req.params.id_kelas)
 
     return res.status(response.status).send(response)
 }

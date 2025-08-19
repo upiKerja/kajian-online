@@ -26,3 +26,18 @@ exports.index = async (req, res, next) => {
         })
     }
 }
+
+exports.insert = async (req, res, next) => {
+    if (!req.body.judul) {
+        return res.status(400).send()
+    }
+    req.body.id_kelas = req.params.id_kelas
+    req.body.slug_pertemuan_kelas = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
+    
+    let response = await supabase
+        .from("pertemuan_kelas")
+        .insert(req.body)
+        .single()
+
+    return res.status(response.status).send(response)       
+}
