@@ -25,8 +25,10 @@ const kajianRouter = require('./routes/kajianRoutes')
 const kajiankategoriRouter = require('./routes/kajiankategoriRoutes')
 const kelasRouter = require('./routes/kelasRoutes')
 const penggunaRouter = require('./routes/penggunaRoutes')
+const programdonasiRouter = require('./routes/programdonasiRoutes')
 
 app.use('/', indexRouter);
+app.use('/programdonasi', programdonasiRouter);
 app.use('/user', usersRouter);
 app.use('/kajian', kajianRouter);
 app.use('/kajian/kategori', kajiankategoriRouter)
