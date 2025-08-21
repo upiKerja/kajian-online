@@ -5,7 +5,7 @@ const { cache } = require("../middleware/cache");
 const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../middleware/auth")
 
 // Guess
-router.get('/index/:id_kelas', cache, controller.indexes)
+router.get('/index/:slug_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
 

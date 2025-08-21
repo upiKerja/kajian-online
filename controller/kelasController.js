@@ -15,7 +15,7 @@ exports.discover = async (req, res) => {
     const response = await supabase.client
         .from("kelas")
         .select("*, pengguna(nama_lengkap, foto_url)")
-        .eq("is_accepted", false)
+        .eq("is_accepted", true)
         .limit(100)
 
     return res.status(response.status).send(response)
@@ -68,7 +68,7 @@ exports.indexes = async (req, res) => {
         .from(table)
         .select("*, pengguna(nama_lengkap, foto_url)")
         .single()
-        .eq("id_kelas", req.params.id_kelas)
+        .eq("slug", req.params.slug_kelas)
 
     return res.status(response.status).send(response)
 }
