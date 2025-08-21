@@ -6,7 +6,7 @@ var table_id = "id_" + table
 exports.carisemua = async (req, res, next) => {
     const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url)")
+        .select("*")
 
     return res.status(response.status).send(response)
 }
@@ -14,7 +14,7 @@ exports.carisemua = async (req, res, next) => {
 exports.discover = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url)")
+        .select("nama_program, slug, id_program_donasi, gambar")
         .eq("is_accepted", true)
         .limit(req.query.limit || 20)
 
@@ -24,10 +24,10 @@ exports.discover = async (req, res) => {
 exports.cari = async (req, res, next) => {
     const response = await supabase.client
         .from(table)
-        .select("judul, slug, pengguna(nama_lengkap, foto_url)")
+        .select("nama_program, slug, id_program_donasi, gambar")
         .eq("is_accepted", true)
         .limit(10)
-        .textSearch("judul", req.query.q, {
+        .textSearch("nama_program", req.query.q, {
             type: "websearch",
             config: "english"
         })
@@ -47,7 +47,7 @@ exports.select = async (req, res) => {
 exports.indexes = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url)")
+        .select("*")
         .single()
         .eq("slug", req.params.slug)
 
@@ -55,11 +55,6 @@ exports.indexes = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-    
-    if (!req.body.id_mentor) {
-        return res.status(400).json({ error: "id_mentor is required" });
-    }
-    
     if (req.body.nama_program) {
         req.body.slug = req.body.nama_program.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     }
@@ -74,10 +69,6 @@ exports.update = async (req, res) => {
 
 
 exports.insert = async (req, res) => {
-    if (!req.body.id_mentor) {
-        return res.status(400).json({ error: "id_mentor is required" });
-    }
-
     if (req.body.nama_program) {
         req.body.slug = req.body.nama_program.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     }
@@ -85,7 +76,7 @@ exports.insert = async (req, res) => {
     const response = await supabase.client
         .from(table)
         .insert(req.body)
-        .select("*, pengguna(role)")
+        .select("*")
 
     return res.status(response.status).send(response)
 }
@@ -104,8 +95,9 @@ exports.donasi = async (req, res) => {
     const response = await supabase.client
         .from("donasi")
         .insert({
-            id_mentor: req.internalUserId,
-            id_program_donasi: req.params.id_program_donasi
+            id_pengguna: req.internalUserId,
+            id_program_donasi: req.params.id_program_donasi,
+            nominal: req.body.nominal
         })
 
     return res.status(response.status).send(response)

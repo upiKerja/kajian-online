@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const controller = require("../controller/programdonasiController")
 const { cache } = require("../middleware/cache");
-const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../middleware/auth")
+const { auth, auth_admin } = require("../middleware/auth")
 
 // Guess
-router.get('index/:slug', cache, controller.indexes)
+router.get('/index/:slug', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
 
