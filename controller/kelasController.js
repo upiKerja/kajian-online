@@ -132,3 +132,12 @@ exports.daftar = async (req, res) => {
 
     return res.status(response.status).send(response)
 }
+
+exports.pertemuan_kelas = async (req, res) => {
+    const response = await supabase.client
+        .from("pertemuan_kelas")
+        .select("*")
+        .eq("id_kelas", req.params.id_kelas)
+
+    return res.status(response.status).send(response)        
+}
