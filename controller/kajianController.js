@@ -87,6 +87,16 @@ exports.indexes = async (req, res) => {
     })
 }
 
+exports.discover = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .select("*")
+        .eq("status", "aktif")
+        .limit(req.query.limit || 20)
+
+    return res.status(response.status).send(response)
+}
+
 exports.update = async (req, res) => {
     const response = await supabase.client
         .from(table)
