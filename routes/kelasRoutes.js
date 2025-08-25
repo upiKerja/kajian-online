@@ -4,16 +4,6 @@ const controller = require("../controller/kelasController")
 const { cache } = require("../middleware/cache");
 const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../middleware/auth")
 
-// Allias
-router.get('/:slug_kelas/meta', cache, controller.meta)
-router.get('/:slug_kelas', cache, controller.indexes)
-
-router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
-router.put('/:id_kelas/sudo/update', auth_admin, controller.sudoUpdate)
-router.put('/:id_kelas/accept', auth_admin, controller.accept)
-router.put('/:id_kelas/update', auth_mentor, authenticated_mentor, controller.update)
-router.delete('/:id_kelas/delete', auth_admin, controller.delete)
-
 // Guess
 router.get('/index/:slug_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
@@ -36,5 +26,15 @@ router.post('/insert', auth_mentor, controller.insert)
 
 // Authenticated Mentor
 router.put('/update/:id_kelas', auth_mentor, authenticated_mentor, controller.update)
+
+// Allias
+router.get('/:slug_kelas/meta', cache, controller.meta)
+router.get('/:slug_kelas', cache, controller.indexes)
+
+router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
+router.put('/:id_kelas/sudo/update', auth_admin, controller.sudoUpdate)
+router.put('/:id_kelas/accept', auth_admin, controller.accept)
+router.put('/:id_kelas/update', auth_mentor, authenticated_mentor, controller.update)
+router.delete('/:id_kelas/delete', auth_admin, controller.delete)
 
 module.exports = router;
