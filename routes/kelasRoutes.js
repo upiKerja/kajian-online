@@ -8,10 +8,10 @@ const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../midd
 router.get('/index/:slug_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
+router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
 
 // User
 router.post('/daftar/:id_kelas', auth, controller.daftar)
-router.get('/index/:id_kelas/pertemuan', auth, controller.pertemuan_kelas)
 
 // Admin
 router.get('/select', auth_admin, controller.select)
