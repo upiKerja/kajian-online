@@ -29,7 +29,7 @@ const programdonasiRouter = require('./routes/programdonasiRoutes')
 const pertemuanKelasRouter = require('./routes/pertemuanKelasRoutes')
 
 app.use('/', indexRouter);
-app.use('/programdonasi', programdonasiRouter);
+app.use('/donasi', programdonasiRouter);
 app.use('/user', usersRouter);
 app.use('/kajian', kajianRouter);
 app.use('/kajian/kategori', kajiankategoriRouter)

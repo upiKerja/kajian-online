@@ -102,3 +102,28 @@ exports.donasi = async (req, res) => {
 
     return res.status(response.status).send(response)
 }
+
+exports.inspect = async (req, res) => {
+    const response = await supabase.client
+        .from("donasi")
+        .select("nominal, pengguna(nama_lengkap)", { count: "exact" })
+        .eq("id_program_donasi", req.params.id_program_donasi)
+
+    let result = 0;
+    let donatur = [];    
+    if (response.count > 1) {
+        response.data.forEach(el => {
+            result += el.nominal
+            donatur.push(el.pengguna.nama_lengkap)
+        })
+        response.data = {
+            terkumpul: result,
+            donatur: [...new Set(donatur)]
+        }
+    } else {
+        response.status = 404
+        response.statusText = "Not Found"
+    }
+
+    return res.status(response.status).send(response)        
+}
