@@ -9,7 +9,7 @@ router.get('/index/:slug_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
 router.get('/meta/:slug_kelas', cache, controller.meta)
-router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
+router.get('/p/:id_kelas', controller.pertemuan_kelas)
 
 // User
 router.post('/daftar/:id_kelas', auth, controller.daftar)
