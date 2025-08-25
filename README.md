@@ -3,8 +3,8 @@
 |---------|-----------|
 | Kelas  | Beres. User dapat daftar & Mentor dapat assign kelas baru. |
 | Pertemuan Kelas | Belum. Belum diimplementasikan dengan baik.
-| Kajian | Beres. Admin dapat assign kelas. |
-| Pengguna | Beres. Cread Read Update Delete. |
+| Kajian | Beres. Admin dapat assign kajian. |
+| Pengguna | Beres. Create Read Update Delete. |
 | Donasi | Belum. Dokumentasi belum tersedia. |
 
 ## 25 Agustus 2025
