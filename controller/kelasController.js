@@ -64,6 +64,20 @@ exports.indexes = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
+exports.meta = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .select("judul, deskripsi, thumbnail_url")
+        .eq("slug", req.params.slug_kelas)
+        .single()
+
+    if (response.status != 200) {
+        response.status = 404
+    }
+    return res.status(response.status).send(response)
+
+}
+
 exports.sudoUpdate = async (req, res) => {
     // Route Update khusus Admin
     const response = await supabase.client

@@ -8,6 +8,7 @@ const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../midd
 router.get('/index/:slug_kelas', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
+router.get('/meta/:slug_kelas', cache, controller.meta)
 router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
 
 // User
