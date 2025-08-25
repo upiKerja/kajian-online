@@ -55,7 +55,7 @@ exports.auth_admin = (req, res, next) =>
 // Middleware setelah auth_mentor.
 exports.authenticated_mentor = async (req, res, next) => {
   if (!req.params.id_kelas) {
-    next() 
+    next()
   }
 
   // Biar up to date.
@@ -64,9 +64,6 @@ exports.authenticated_mentor = async (req, res, next) => {
     .select("id_mentor")
     .eq("id_kelas", req.params.id_kelas)
     .single()
-  
-  console.log(response.data.id_mentor)
-  console.log(req.internalUserId)
 
   if (response.data.id_mentor === req.internalUserId) {
     console.log("rijal")

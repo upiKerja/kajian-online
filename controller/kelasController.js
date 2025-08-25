@@ -146,3 +146,17 @@ exports.daftar = async (req, res) => {
 
     return res.status(response.status).send(response)
 }
+
+exports.pertemuan_kelas = async (req, res) => {
+    const response = await supabase.client
+        .from("pertemuan_kelas")
+        .select("*", {count: "exact"})
+        .eq("id_kelas", req.params.id_kelas)
+    
+    if (response.count < 1) {
+        response.status = 404
+        response.statusText = "Not Found"
+    }
+
+    return res.status(response.status).send(response)        
+}
