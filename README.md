@@ -1,11 +1,11 @@
-# Belajar Ngaji Online 0.7
-| Model | Status |
-|---------|-----------|
-| Kelas  | Beres. User dapat daftar & Mentor dapat assign kelas baru. |
-| Pertemuan Kelas | Belum. Belum diimplementasikan dengan baik.
-| Kajian | Beres. Admin dapat assign kajian. |
-| Pengguna | Beres. Create Read Update Delete. |
-| Donasi | Belum. Dokumentasi belum tersedia. |
+# Belajar Ngaji Online v0.7
+| Model | Status | Deskripsi |
+|---------|-----------|----|
+| Kelas  | Beres | User dapat daftar & Mentor dapat assign kelas baru. |
+| Pertemuan Kelas | Belum | Belum diimplementasikan dengan baik.
+| Kajian | Beres | Admin dapat assign kajian. |
+| Pengguna | Beres | Log In with Google, Discord or Facebook. |
+| Donasi | Belum | Dokumentasi belum tersedia. |
 
 ## 25 Agustus 2025
 - Pertemuan Kelas
