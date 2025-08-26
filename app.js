@@ -37,4 +37,17 @@ app.use('/kelas', kelasRouter);
 app.use('/pengguna', penggunaRouter)
 app.use('/kelas/pertemuan', pertemuanKelasRouter)
 
+const apiRouter = express.Router();
+
+apiRouter.use('/', indexRouter);
+apiRouter.use('/donasi', programdonasiRouter);
+apiRouter.use('/user', usersRouter);
+apiRouter.use('/kajian', kajianRouter);
+apiRouter.use('/kajian/kategori', kajiankategoriRouter);
+apiRouter.use('/kelas', kelasRouter);
+apiRouter.use('/pengguna', penggunaRouter);
+apiRouter.use('/kelas/pertemuan', pertemuanKelasRouter);
+
+app.use('/api', apiRouter);
+
 module.exports = app;

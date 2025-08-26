@@ -14,8 +14,7 @@ exports.carisemua = async (req, res, next) => {
 exports.discover = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("nama_program, slug, id_program_donasi, gambar")
-        .eq("is_accepted", true)
+        .select("nama_program, slug, id_program_donasi, deskripsi")
         .limit(req.query.limit || 20)
 
     return res.status(response.status).send(response)
@@ -24,7 +23,7 @@ exports.discover = async (req, res) => {
 exports.cari = async (req, res, next) => {
     const response = await supabase.client
         .from(table)
-        .select("nama_program, slug, id_program_donasi, gambar")
+        .select("nama_program, slug, id_program_donasi, deskripsi")
         .eq("is_accepted", true)
         .limit(10)
         .textSearch("nama_program", req.query.q, {
