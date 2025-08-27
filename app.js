@@ -27,6 +27,7 @@ const kelasRouter = require('./routes/kelasRoutes')
 const penggunaRouter = require('./routes/penggunaRoutes')
 const programdonasiRouter = require('./routes/programdonasiRoutes')
 const pertemuanKelasRouter = require('./routes/pertemuanKelasRoutes')
+const fileuploadRouter = require('./routes/fileuploadRoutes')
 
 app.use('/', indexRouter);
 app.use('/donasi', programdonasiRouter);
@@ -36,6 +37,7 @@ app.use('/kajian/kategori', kajiankategoriRouter)
 app.use('/kelas', kelasRouter);
 app.use('/pengguna', penggunaRouter)
 app.use('/kelas/pertemuan', pertemuanKelasRouter)
+app.use('/file', fileuploadRouter)
 
 const apiRouter = express.Router();
 
@@ -47,6 +49,7 @@ apiRouter.use('/kajian/kategori', kajiankategoriRouter);
 apiRouter.use('/kelas', kelasRouter);
 apiRouter.use('/pengguna', penggunaRouter);
 apiRouter.use('/kelas/pertemuan', pertemuanKelasRouter);
+apiRouter.use('/file', fileuploadRouter)
 
 app.use('/api', apiRouter);
 
