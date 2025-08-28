@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("./middleware/cors").cors
 var auth = require("./middleware/auth").auth
+var cleanup = require("./middleware/cleanup")
 
 
 var app = express();
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors)
+cleanup()
 
 // Routes
 const indexRouter = require('./routes/indexRoutes');

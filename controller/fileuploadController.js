@@ -1,61 +1,58 @@
-const path = require("path");
 const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 const fs = require("fs");
-const axios = require("axios");
 
-exports.uploadFile = (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
+// ----------------- TEMP UPLOAD -----------------
+const tempStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/static/");
+  },
+  filename: (req, file, cb) => {
+    if (!req.internalUserId) return cb(new Error("User ID missing"), null);
 
-  const filePath = `/static/${req.file.filename}`;
-  const endpointInfo = `${req.method} ${req.baseUrl}${req.path}/${req.file.originalname}`;
+    const ext = path.extname(file.originalname);
+    const filename = `${req.internalUserId}_temp${ext}`;
+
+    const filepath = path.join("public/static", filename);
+    if (fs.existsSync(filepath)) fs.unlinkSync(filepath); // replace old temp
+    cb(null, filename);
+  },
+});
+
+const tempUpload = multer({ storage: tempStorage });
+
+exports.tempUploadMiddleware = tempUpload.single("file");
+
+exports.tempUploadFile = (req, res) => {
+  if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
   res.json({
-    message: "File uploaded successfully",
-    endpoint: endpointInfo,
-    url: filePath,
+    message: "Temp file uploaded",
+    filename: `/static/${req.file.filename}`,
+    id_pengguna: req.internalUserId,
   });
 };
 
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => cb(null, "public/static"),
-  filename: (_, file, cb) => cb(null, uuidv4() + path.extname(file.originalname)),
-});
+// ----------------- COMMIT TEMP TO MAIN (_pp) -----------------
+exports.commitTempFile = (req, res) => {
+  let filename = req.body.filename;
+if (!filename) return res.status(400).json({ message: "Missing info" });
+  if (!req.internalUserId || !filename) 
+    return res.status(400).json({ message: "Missing info" });
 
-exports.uploadFromUrl = async (req, res) => {
-  const { url } = req.body;
-  if (!url) {
-    return res.status(400).json({ error: "No URL provided" });
-  }
+  filename = filename.replace(/^\/static\//, '');
+  const tempFile = path.join("public/static", filename);
+  const ext = path.extname(filename);
+  const mainFile = path.join("public/static", `${req.internalUserId}_pp${ext}`);
 
-  try {
-    const response = await axios.get(url, { responseType: "arraybuffer" });
+  if (!fs.existsSync(tempFile)) 
+    return res.status(404).json({ message: "Temp file not found" });
 
-    const contentType = response.headers["content-type"];
-    let ext = ".jpg";
-    if (contentType === "image/png") ext = ".png";
-    else if (contentType === "image/jpeg") ext = ".jpg";
-    else if (contentType === "image/gif") ext = ".gif";
+  // Remove old main file if exists
+  if (fs.existsSync(mainFile)) fs.unlinkSync(mainFile);
 
-    const filename = uuidv4() + ext;
-    const savePath = path.join("public/static", filename);
+  // Rename temp → main
+  fs.renameSync(tempFile, mainFile);
 
-    fs.writeFileSync(savePath, response.data);
-
-    res.json({
-      message: "File downloaded successfully",
-      url: `/static/${filename}`,
-      sourceUrl: url,
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Failed to fetch image" });
-  }
+  res.json({ message: "Profile picture committed", filename: `${req.internalUserId}_pp${ext}` });
 };
-
-
-const upload = multer({ storage });
-exports.uploadMiddleware = upload.single("file");
-
