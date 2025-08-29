@@ -22,6 +22,20 @@ exports.carisemua = async (req, res, next) => {
     })
 }
 
+exports.meta = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .select("judul, deskripsi, thumbnail_url, deskripsi_lengkap")
+        .eq("slug", req.params.slug_kajian)
+        .single()
+
+    if (response.status != 200) {
+        response.status = 404
+    }
+    return res.status(response.status).send(response)
+
+}
+
 exports.cari = async (req, res, next) => {
     const { data, error } = await supabase.client
         .from(table)
@@ -67,31 +81,19 @@ exports.select = async (req, res) => {
 }
 
 exports.indexes = async (req, res) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url, id_pengguna)")
-        .limit(1)
+        .select("*")
         .eq("slug", req.params.slug_kajian)
+        .single()
 
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        return res.status(404).send({
-            message: "data tidak ditemukan",
-            status: "failed",
-            error: error
-        })
-    }
-    return res.status(200).send({
-        message: "success",
-        status: "success",
-        data: data[0]
-    })
+    return res.status(response.status).send(response)
 }
 
 exports.discover = async (req, res) => {
     const response = await supabase.client
         .from(table)
         .select("*")
-        .eq("status", "aktif")
         .limit(req.query.limit || 20)
 
     return res.status(response.status).send(response)

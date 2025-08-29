@@ -8,6 +8,7 @@ const { auth_admin } = require("../middleware/auth")
 router.get('/index/:slug_kajian', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
+router.get('/meta/:slug_kajian', cache, controller.meta)
 
 // Admin
 router.get('/select', auth_admin, controller.select)
