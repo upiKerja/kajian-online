@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// ----------------- TEMP UPLOAD -----------------
+// ----------------- Profile TEMP UPLOAD -----------------
 const tempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/static/");
@@ -33,7 +33,7 @@ exports.tempUploadFile = (req, res) => {
   });
 };
 
-// ----------------- COMMIT TEMP TO MAIN (_pp) -----------------
+// ----------------- Profile COMMIT TEMP TO MAIN (_pp) -----------------
 exports.commitTempFile = (req, res) => {
   let filename = req.body.filename;
 if (!filename) return res.status(400).json({ message: "Missing info" });
@@ -73,13 +73,13 @@ const tempThumbnailUpload = multer({ storage: tempThmbnailStorage });
 exports.tempThumbnailUploadMiddleware = tempThumbnailUpload.single("file");
 
 exports.tempThumbnailUploadFile = (req, res) => {
-  const internalDonasiId = req.body.InternalDonasiId || req.internalDonasiId;
-  if (!internalDonasiId) {
-    return res.status(400).json({ error: "InternalDonasiId missing" });
+  const InternalId = req.body.InternalId || req.InternalId;
+  if (!InternalId) {
+    return res.status(400).json({ error: "InternalId missing" });
   }
 
   const ext = path.extname(req.file.originalname);
-  const newFilename = `${internalDonasiId}_tempthumbnail${ext}`;
+  const newFilename = `${InternalId}_tempthumbnail${ext}`;
   const newPath = path.join("public/static", newFilename);
 
   // remove old if exists
@@ -92,15 +92,15 @@ exports.tempThumbnailUploadFile = (req, res) => {
 
 // ----------------- COMMIT TEMP-THMBNAIL TO MAIN (_thumbnail) -----------------
 exports.commitTempThumbnailFile = (req, res) => {
-  let { filename, InternalDonasiId } = req.body;
-  if (!filename || !InternalDonasiId) {
+  let { filename, InternalId } = req.body;
+  if (!filename || !InternalId) {
     return res.status(400).json({ message: "Missing info" });
   }
 
   filename = filename.replace(/^\/static\//, '');
   const tempFile = path.join("public/static", filename);
   const ext = path.extname(filename);
-  const mainFile = path.join("public/static", `${InternalDonasiId}_thumbnail${ext}`);
+  const mainFile = path.join("public/static", `${InternalId}_thumbnail${ext}`);
 
   if (!fs.existsSync(tempFile)) {
     return res.status(404).json({ message: "Temp file not found" });
@@ -113,5 +113,5 @@ exports.commitTempThumbnailFile = (req, res) => {
   fs.renameSync(tempFile, mainFile);
 
   // TODO: save new thumbnail URL into DB here if needed
-  res.json({ message: "Thumbnail committed", filename: `${InternalDonasiId}_thumbnail${ext}` });
+  res.json({ message: "Thumbnail committed", filename: `${InternalId}_thumbnail${ext}` });
 };
