@@ -103,7 +103,7 @@ exports.update = async (req, res) => {
     const response = await supabase.client
         .from(table)
         .update(req.body)
-        .eq(table_id, req.id_kajian)
+        .eq(table_id, req.params.id_kajian)
 
     if (!response.error) {
         return res.status(response.status).send({
@@ -120,20 +120,17 @@ exports.update = async (req, res) => {
 }
 
 exports.insert = async (req, res) => {
+    if (req.body.judul) {
+        req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
+    } 
+    
     const response = await supabase.client
         .from(table)
-        .insert([req.body])
-        .single()
+        .insert(req.body)
         .select("*")
 
-    if (response.error) {
-        return res.status(response.status).send({
-            message: response.statusText,
-            status: "failed",
-            error: response.error
-        });
-    }
-    return res.status(201).send({ info: "success", data });
+    return res.status(response.status).send(response)
+
 }
 
 exports.delete = async (req, res) => {

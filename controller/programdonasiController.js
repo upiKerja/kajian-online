@@ -124,5 +124,15 @@ exports.inspect = async (req, res) => {
         response.statusText = "Not Found"
     }
 
-    return res.status(response.status).send(response)        
+    return res.status(response.status).send(response)   
+}
+
+exports.single = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .select("*")
+        .limit(1)
+        .single()
+    
+    return res.status(response.status).send(response)
 }

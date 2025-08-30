@@ -8,6 +8,7 @@ const { auth, auth_admin } = require("../middleware/auth")
 router.get('/index/:slug', cache, controller.indexes)
 router.get('/cari', cache, controller.cari)
 router.get('/discover', cache, controller.discover)
+router.get('/single', cache, controller.single)
 
 // User
 router.post('/donasi/:id_program_donasi', auth, controller.donasi)
