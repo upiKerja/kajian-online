@@ -8,7 +8,7 @@ exports.index = async (req, res, next) => {
     try {
         const response = await supabase
             .from("pertemuan_kelas")
-            .select("*, kelas(id_kelas, slug, id_mentor, judul, log_kelas(id_pengguna))")
+            .select("*, kelas(id_kelas, slug, id_mentor, judul, log_kelas(id_pengguna), pengguna(nama_lengkap, foto_url, kontak))")
             .eq("kelas.log_kelas.id_pengguna", id_pengguna)
             .or(
                 "id_pertemuan_kelas.eq." + id_pertemuan_kelas
