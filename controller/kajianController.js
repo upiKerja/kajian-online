@@ -105,18 +105,7 @@ exports.update = async (req, res) => {
         .update(req.body)
         .eq(table_id, req.params.id_kajian)
 
-    if (!response.error) {
-        return res.status(response.status).send({
-            message: response.statusText,
-            status: "success",
-            data: response.data
-        })
-    }
-    return res.status(response.status).send({
-        message: response.statusText,
-        status: "failed",
-        error: response.error
-    })
+    return res.status(response.status).send(response)
 }
 
 exports.insert = async (req, res) => {
