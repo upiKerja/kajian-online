@@ -12,6 +12,12 @@ router.post(
   fileController.tempUploadFile
 );
 
+router.post(
+  "/temp-thumbnail-upload",
+  fileController.tempThumbnailUploadMiddleware,
+  fileController.tempThumbnailUploadFile
+);
+
 // ---------------- COMMIT TEMP TO MAIN ----------------
 // Commit the temp file to main profile picture (_pp)
 router.post(
@@ -19,5 +25,14 @@ router.post(
   authMiddleware.auth,
   fileController.commitTempFile
 );
+
+router.post(
+  "/commit-temp-thumbnail",
+  fileController.commitTempThumbnailFile
+);
+
+router.get("/test", (req, res) => {
+    res.send("✅ Test route is working!");
+});
 
 module.exports = router;

@@ -56,3 +56,62 @@ if (!filename) return res.status(400).json({ message: "Missing info" });
 
   res.json({ message: "Profile picture committed", filename: `${req.internalUserId}_pp${ext}` });
 };
+
+// ----------------- TEMP THUMBNAIL UPLOAD -----------------
+const tempThmbnailStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/static/");
+  },
+  filename: (req, file, cb) => {
+    // just give random name for now
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const tempThumbnailUpload = multer({ storage: tempThmbnailStorage });
+
+exports.tempThumbnailUploadMiddleware = tempThumbnailUpload.single("file");
+
+exports.tempThumbnailUploadFile = (req, res) => {
+  const internalDonasiId = req.body.InternalDonasiId || req.internalDonasiId;
+  if (!internalDonasiId) {
+    return res.status(400).json({ error: "InternalDonasiId missing" });
+  }
+
+  const ext = path.extname(req.file.originalname);
+  const newFilename = `${internalDonasiId}_tempthumbnail${ext}`;
+  const newPath = path.join("public/static", newFilename);
+
+  // remove old if exists
+  if (fs.existsSync(newPath)) fs.unlinkSync(newPath);
+
+  fs.renameSync(req.file.path, newPath);
+
+  res.json({ filename: newFilename});
+};
+
+// ----------------- COMMIT TEMP-THMBNAIL TO MAIN (_thumbnail) -----------------
+exports.commitTempThumbnailFile = (req, res) => {
+  let { filename, InternalDonasiId } = req.body;
+  if (!filename || !InternalDonasiId) {
+    return res.status(400).json({ message: "Missing info" });
+  }
+
+  filename = filename.replace(/^\/static\//, '');
+  const tempFile = path.join("public/static", filename);
+  const ext = path.extname(filename);
+  const mainFile = path.join("public/static", `${InternalDonasiId}_thumbnail${ext}`);
+
+  if (!fs.existsSync(tempFile)) {
+    return res.status(404).json({ message: "Temp file not found" });
+  }
+
+  // Remove old main file if exists
+  if (fs.existsSync(mainFile)) fs.unlinkSync(mainFile);
+
+  // Rename temp → main
+  fs.renameSync(tempFile, mainFile);
+
+  // TODO: save new thumbnail URL into DB here if needed
+  res.json({ message: "Thumbnail committed", filename: `${InternalDonasiId}_thumbnail${ext}` });
+};
