@@ -14,7 +14,7 @@ exports.index = async (req, res, next) => {
                 "id_pertemuan_kelas.eq." + id_pertemuan_kelas
             )
             .single()
-    
+
         if (response.data.kelas.log_kelas[0]) {
             const {log_kelas, ...jadi} = response.data.kelas
             response.data.kelas = jadi
@@ -36,6 +36,16 @@ exports.index = async (req, res, next) => {
 
 }
 
+exports.index_m = async(req, res) => {
+    const response = await supabase
+        .from("pertemuan_kelas")
+        .select("*")
+        .eq("id_pertemuan_kelas", req.params.id_pertemuan_kelas)
+        .single()
+
+    return res.status(response.status).send(response)        
+}
+
 exports.insert = async (req, res, next) => {
     if (!req.body.judul) {
         return res.status(400).send()
@@ -49,4 +59,13 @@ exports.insert = async (req, res, next) => {
         .single()
 
     return res.status(response.status).send(response)       
+}
+
+exports.delete = async (req, res) => {
+    const response = await supabase
+        .from("pertemuan_kelas")
+        .delete()
+        .eq("id_pertemuan_kelas", req.params.id_pertemuan_kelas)
+
+    return res.status(response.status).send(response)
 }
