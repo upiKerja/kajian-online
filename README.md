@@ -1,11 +1,28 @@
-# Belajar Ngaji Online v0.7
+# Belajar Ngaji Online v0.8
 | Model | Status | Deskripsi |
 |---------|-----------|----|
 | Kelas  | Beres | User dapat daftar & Mentor dapat assign kelas baru. |
-| Pertemuan Kelas | Belum | Belum diimplementasikan dengan baik.
+| Pertemuan Kelas | Beres | Sudah diimplementasikan dengan baik.
 | Kajian | Beres | Admin dapat assign kajian. |
 | Pengguna | Beres | Log In with Google, Discord or Facebook. |
-| Donasi | Belum | Dokumentasi belum tersedia. |
+| Donasi | Belum | Dokumentasi serta validasi belum tersedia. |
+
+## 1 September 2025
+- Pertemuan Kelas
+  - Kelas harus memiliki minimal 1 pertemuan.
+  - User harus terdaftar ke kelas jika ingin mengakses pertemuan kelas.
+- File Upload
+  - Memungkinkan untuk meng-upload file statis ke server.
+  - Digunakan untuk thumbnail, foto profile, CV, dan konten statis lainnya.
+- Route
+  - Route khusus untuk SSR: `meta`
+
+### Batasan
+- Cache menyimpan status code yang invalid.
+- File Upload belum di test lebih lanjut.
+
+### Perbaikan
+- Pertemuan kelas sudah diimplementasikan dengan baik.
 
 ## 25 Agustus 2025
 - Pertemuan Kelas
