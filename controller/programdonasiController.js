@@ -119,7 +119,7 @@ exports.inspect = async (req, res) => {
 
     let result = 0;
     let donatur = [];    
-    if (response.count > 1) {
+    if (response.count >= 1) {
         response.data.forEach(el => {
             result += el.nominal
             donatur.push(el.pengguna.nama_lengkap)
