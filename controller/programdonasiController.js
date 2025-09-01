@@ -20,6 +20,15 @@ exports.discover = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
+exports.accept = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .update({is_accepted: true})
+        .eq("id_program_donasi", req.params.id_program_donasi)
+
+    return res.status(response.status).send(response)
+}
+
 exports.cari = async (req, res, next) => {
     const response = await supabase.client
         .from(table)

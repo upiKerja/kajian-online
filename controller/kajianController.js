@@ -99,45 +99,41 @@ exports.discover = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
-exports.update = async (req, res) => {
-    const response = await supabase.client
+exports.update = async (req, res, next) => {
+    req.abudabi = await supabase.client
         .from(table)
         .update(req.body)
         .eq(table_id, req.params.id_kajian)
+        .select("slug")
+        .single()
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
-exports.insert = async (req, res) => {
+exports.insert = async (req, res, next) => {
     if (req.body.judul) {
         req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     } 
     
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
-        .select("*")
+        .select("slug")
+        .single()
 
-    return res.status(response.status).send(response)
-
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
 exports.delete = async (req, res) => {
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .delete()
         .eq(table_id, req.params.id_kajian)
-        .select("*")
+        .select("slug")
+        .single()
 
-    if (response.error) {
-        return res.status(400).send({
-            message: response.statusText,
-            status: "failed",
-            error: response.error
-        });
-    }
-    return res.status(response.status).send({
-        message: "success",
-        status: "success",
-        data : response.data});
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 };
