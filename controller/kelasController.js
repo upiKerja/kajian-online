@@ -21,14 +21,16 @@ exports.discover = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
-exports.accept = async(req, res) => {
-    const response = await supabase.client
+exports.accept = async(req, res, next) => {
+    req.abudabi = await supabase.client
         .from("kelas")
         .update({is_accepted: true})
         .eq("id_kelas", req.params.id_kelas)
+        .select("slug")
         .single()
 
-    return res.status(response.status).send(response)    
+    res.status(req.abudabi.status).send(req.abudabi)    
+    next()
 }
 
 exports.cari = async (req, res, next) => {
@@ -78,17 +80,20 @@ exports.meta = async (req, res) => {
 
 }
 
-exports.sudoUpdate = async (req, res) => {
+exports.sudoUpdate = async (req, res, next) => {
     // Route Update khusus Admin
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .update(req.body)
         .eq(table_id, req.params.id_kelas)
+        .single()
+        .select("*")
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
     // Route Update khusus authenticated mentor
 
     // Jaga-jaga kalo mau ngupdate Judul
@@ -98,18 +103,21 @@ exports.update = async (req, res) => {
 
     // Data yang gaboleh di Update
     const {is_accepted, id_mentor, id_kelas, ...inih} = req.body
-    req.body.is_accepted = false // Data yang udah diupdate harus di ACC lebih dulu ama Admin.
     req.body = inih
+    req.body.is_accepted = false // Data yang udah diupdate harus di ACC lebih dulu ama Admin.
 
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .update(req.body)
         .eq(table_id, req.params.id_kelas)
+        .select("slug")
+        .single()
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
-exports.insert = async (req, res) => {
+exports.insert = async (req, res, next) => {
     if (req.body.judul) {
         req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     } 
@@ -118,22 +126,24 @@ exports.insert = async (req, res) => {
     req.body = inih
     req.body.id_mentor = req.internalUserId
 
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
-        .select("*")
+        .select("slug")
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
-exports.delete = async (req, res) => {
-    const response = await supabase.client
+exports.delete = async (req, res, next) => {
+    req.abudabi = await supabase.client
         .from(table)
         .delete()
         .eq(table_id, req.params.id)
-        .select("*")
+        .select("slug")
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 };
 
 exports.daftar = async (req, res) => {

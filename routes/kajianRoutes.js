@@ -15,6 +15,6 @@ router.get('/select', auth_admin, controller.select)
 router.get('/carisemua', auth_admin, controller.carisemua)
 router.post('/insert', auth_admin, controller.insert, flush_cache)
 router.put('/update/:id_kajian', auth_admin, controller.update, flush_cache)
-router.delete('/delete/:id_kajian', auth_admin, controller.delete)
+router.delete('/delete/:id_kajian', auth_admin, controller.delete, flush_cache)
 
 module.exports = router;
