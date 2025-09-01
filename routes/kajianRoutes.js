@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require("../controller/kajianController")
-const { cache } = require("../middleware/cache");
+const { cache, flush_cache } = require("../middleware/cache");
 const { auth_admin } = require("../middleware/auth")
 
 // Guess
@@ -13,8 +13,8 @@ router.get('/meta/:slug_kajian', cache, controller.meta)
 // Admin
 router.get('/select', auth_admin, controller.select)
 router.get('/carisemua', auth_admin, controller.carisemua)
-router.post('/insert', auth_admin, controller.insert)
-router.put('/update/:id_kajian', auth_admin, controller.update)
+router.post('/insert', auth_admin, controller.insert, flush_cache)
+router.put('/update/:id_kajian', auth_admin, controller.update, flush_cache)
 router.delete('/delete/:id_kajian', auth_admin, controller.delete)
 
 module.exports = router;

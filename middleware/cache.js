@@ -58,9 +58,7 @@ exports.get_or_set_for_auth = async (req, key, val) => {
 
         // Set
         pal = await val()
-        console.log(pal)
         await redis.set(key, JSON.stringify(pal.data.role), 'EX', 3600);
-        console.log("Cache set for:", key);
         return pal.data.role.replace(/"/g, '');
 
     } catch (err) {
@@ -68,3 +66,21 @@ exports.get_or_set_for_auth = async (req, key, val) => {
         return "rijal";
     }
 };
+
+exports.flush_cache = async (req, res, next) => {
+    let splited = req.originalUrl.split("/")
+    const redis = req.app.locals.redis
+
+    if (
+        ["POST", "PUT", "DELETE"].indexOf(req.method) !== -1
+        & [200, 201, 204].indexOf(req.abudabi.status) !== -1
+        & redis.isOpen
+    ) {
+        (await redis.keys(`*/${splited[1] == "api" ? splited[2] : splited[1]}/*`)).forEach(key => {
+            if (
+                key.includes(req.abudabi.data.slug) ||
+                !key.includes("-")
+            ) redis.del(key).then(() => console.log("Cache Removed: " + key))
+        })
+    }
+}

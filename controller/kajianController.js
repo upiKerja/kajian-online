@@ -99,16 +99,19 @@ exports.discover = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
-exports.update = async (req, res) => {
-    const response = await supabase.client
+exports.update = async (req, res, next) => {
+    req.abudabi = await supabase.client
         .from(table)
         .update(req.body)
         .eq(table_id, req.params.id_kajian)
+        .select("slug")
+        .single()
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
-exports.insert = async (req, res) => {
+exports.insert = async (req, res, next) => {
     if (req.body.judul) {
         req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     } 
@@ -118,8 +121,9 @@ exports.insert = async (req, res) => {
         .insert(req.body)
         .select("*")
 
-    return res.status(response.status).send(response)
-
+    res.status(response.status).send(response)
+    req.abudabi = response
+    next()
 }
 
 exports.delete = async (req, res) => {
