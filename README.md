@@ -16,6 +16,10 @@
   - Digunakan untuk thumbnail, foto profile, CV, dan konten statis lainnya.
 - Route
   - Route khusus untuk SSR: `meta`
+- Cache
+  - Meningkatkan pengaturan cache tingkat lanjut.
+  - Hanya tersedia pada `kajian` & `kelas`
+  - Memungkinkan data selalu up to date dan cache selalu tersedia.
 
 ### Batasan
 - Cache menyimpan status code yang invalid.
