@@ -15,8 +15,8 @@ router.get('/p/:id_kelas', controller.pertemuan_kelas)
 router.post('/daftar/:id_kelas', auth, controller.daftar)
 
 // Admin
-router.get('/select', auth_admin, controller.select)
-router.get('/carisemua', auth_admin, controller.carisemua)
+router.get('/select', auth_admin, cache, controller.select)
+router.get('/carisemua', auth_admin, cache, controller.carisemua)
 router.put('/sudo/update/:id_kelas', auth_admin, controller.sudoUpdate, flush_cache)
 router.put('/accept/:id_kelas', auth_admin, controller.accept, flush_cache)
 router.delete('/delete/:id_kelas', auth_admin, controller.delete, flush_cache)
