@@ -51,7 +51,7 @@ exports.insert = async (req, res, next) => {
         return res.status(400).send()
     }
     req.body.id_kelas = req.params.id_kelas
-    req.body.slug_pertemuan_kelas = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
+    req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     
     let response = await supabase
         .from("pertemuan_kelas")
