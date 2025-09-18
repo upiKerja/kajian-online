@@ -69,3 +69,16 @@ exports.delete = async (req, res) => {
 
     return res.status(response.status).send(response)
 }
+
+exports.update = async (req, res, next) => {
+    req.body.id_kelas = req.params.id_kelas
+    req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
+    const {id_pertemuan_kelas, id_pengguna, id_kelas,   ...inih} = req.body
+    
+    let response = await supabase
+        .from("pertemuan_kelas")
+        .update(inih)
+        .eq("id_pertemuan_kelas", req.params.id_pertemuan_kelas)
+
+    return res.status(response.status).send(response)     
+}

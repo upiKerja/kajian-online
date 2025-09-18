@@ -55,7 +55,7 @@ exports.auth_admin = (req, res, next) =>
 // Middleware setelah auth_mentor.
 exports.authenticated_mentor = async (req, res, next) => {
   if (!req.params.id_kelas) {
-    next()
+    return next()
   }
 
   // Biar up to date.
