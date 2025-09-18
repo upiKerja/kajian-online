@@ -13,8 +13,8 @@ router.get('/meta/:slug_kajian', cache, controller.meta)
 // Admin
 router.get('/select', auth_admin, cache, controller.select)
 router.get('/carisemua', auth_admin, cache,  controller.carisemua)
-router.post('/insert', auth_admin, controller.insert, flush_cache)
-router.put('/update/:id_kajian', auth_admin, controller.update, flush_cache)
-router.delete('/delete/:id_kajian', auth_admin, controller.delete, flush_cache)
+router.post('/insert', auth_admin, controller.insert)
+router.put('/update/:id_kajian', auth_admin, controller.update)
+router.delete('/delete/:id_kajian', auth_admin, controller.delete)
 
 module.exports = router;

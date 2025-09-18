@@ -119,11 +119,10 @@ exports.insert = async (req, res, next) => {
     req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
-        .select("slug")
+        .select("*")
         .single()
 
-    res.status(req.abudabi.status).send(req.abudabi)
-    next()
+    return res.status(req.abudabi.status).send(req.abudabi)
 }
 
 exports.delete = async (req, res) => {
