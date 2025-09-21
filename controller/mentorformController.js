@@ -3,6 +3,16 @@ var supabase = require("../database/supabase")
 var table = "mentor_form"
 var table_id = "id_" + table
 
+exports.indexes = async (req, res) => {
+    const response = await supabase.client
+        .from(table)
+        .select("*")
+        .eq("id_pengguna", req.internalUserId)
+        .single()
+
+    return res.status(response.status).send(response)
+}
+
 exports.carisemua = async (req, res, next) => {
     const { data, error } = await supabase.client
         .from(table)

@@ -6,6 +6,7 @@ const { auth_admin, auth } = require("../middleware/auth")
 
 // User
 router.post('/insert', auth, controller.insert)
+router.get('/mine', auth, controller.indexes)
 
 // Admin
 router.get('/carisemua', auth_admin, cache,  controller.carisemua)
