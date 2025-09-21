@@ -30,6 +30,7 @@ const penggunaRouter = require('./routes/penggunaRoutes')
 const programdonasiRouter = require('./routes/programdonasiRoutes')
 const pertemuanKelasRouter = require('./routes/pertemuanKelasRoutes')
 const fileuploadRouter = require('./routes/fileuploadRoutes')
+const mentorformRouter = require('./routes/mentorformRoutes')
 
 app.use('/', indexRouter);
 app.use('/donasi', programdonasiRouter);
@@ -40,6 +41,7 @@ app.use('/kelas', kelasRouter);
 app.use('/pengguna', penggunaRouter)
 app.use('/kelas/pertemuan', pertemuanKelasRouter)
 app.use('/file', fileuploadRouter)
+app.use('/mentorform', mentorformRouter)
 
 const apiRouter = express.Router();
 
@@ -52,6 +54,7 @@ apiRouter.use('/kelas', kelasRouter);
 apiRouter.use('/pengguna', penggunaRouter);
 apiRouter.use('/kelas/pertemuan', pertemuanKelasRouter);
 apiRouter.use('/file', fileuploadRouter)
+apiRouter.use('/mentorform', mentorformRouter)
 
 app.use('/api', apiRouter);
 
