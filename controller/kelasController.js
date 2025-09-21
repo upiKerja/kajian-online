@@ -4,10 +4,26 @@ var table = "kelas"
 var table_id = "id_" + table
 
 exports.carisemua = async (req, res, next) => {
-    const response = await supabase.client
+    let response = supabase.client
         .from(table)
         .select("*, pengguna(nama_lengkap, foto_url)")
+    
+    response = await (req.userRole == "mentor" ?
+        response.eq("id_mentor", req.internalUserId) :
+        response
+    )
 
+    return res.status(response.status).send(response)
+}
+
+exports.is_registred = async (req, res) => {
+    const response = await supabase.client
+        .from("log_kelas")
+        .select("id_pengguna")
+        .or(`and(id_pengguna.eq.${req.internalUserId},id_kelas.eq.${req.params.id_kelas})`)
+        .single()
+
+    response.data = response.status == 200
     return res.status(response.status).send(response)
 }
 
