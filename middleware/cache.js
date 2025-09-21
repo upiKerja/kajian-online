@@ -67,22 +67,24 @@ exports.get_or_set_for_auth = async (req, key, val) => {
     }
 };
 
-exports.flush_cache = async (req, res, next) => {
-    let splited = req.originalUrl.split("/")
+exports.flush_cache = async (req, res, next) => { 
     const redis = req.app.locals.redis
-    let rijal = splited[1] == "api" ? splited[2] : splited[1]
-
-    if (
-        ["POST", "PUT", "DELETE"].indexOf(req.method) !== -1
-        & [200, 201, 204].indexOf(req.abudabi.status) !== -1
-        & redis.isOpen
-    ) {
-        (await redis.keys(`*/${rijal}/*`)).forEach(key => {
-            if (
-                key.includes(req.abudabi.data.slug) ||
-                !key.includes("-") ||
-                key.includes("id_" + rijal)
-            ) redis.del(key).then(() => console.log("Cache Removed: " + key))
-        })
+    if (redis) {
+        let splited = req.originalUrl.split("/")
+        let rijal = splited[1] == "api" ? splited[2] : splited[1]
+    
+        if (
+            ["POST", "PUT", "DELETE"].indexOf(req.method) !== -1
+            & [200, 201, 204].indexOf(req.abudabi.status) !== -1
+            & redis.isOpen
+        ) {
+            (await redis.keys(`*/${rijal}/*`)).forEach(key => {
+                if (
+                    key.includes(req.abudabi.data.slug) ||
+                    !key.includes("-") ||
+                    key.includes("id_" + rijal)
+                ) redis.del(key).then(() => console.log("Cache Removed: " + key))
+            })
+        }
     }
 }
