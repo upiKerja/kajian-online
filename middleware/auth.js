@@ -54,7 +54,7 @@ exports.auth_admin = (req, res, next) =>
 
 // Middleware setelah auth_mentor.
 exports.authenticated_mentor = async (req, res, next) => {
-  if (!req.params.id_kelas) {
+  if (!req.params.id_kelas || req.userRole === "admin") {
     return next()
   }
 

@@ -13,16 +13,17 @@ router.get('/p/:id_kelas', controller.pertemuan_kelas)
 
 // User
 router.post('/daftar/:id_kelas', auth, controller.daftar)
+router.get('/is_user_registred/:id_kelas', auth, controller.is_registred)
 
 // Admin
-router.get('/select', auth_admin, cache, controller.select)
-router.get('/carisemua', auth_admin, cache, controller.carisemua)
 router.put('/sudo/update/:id_kelas', auth_admin, controller.sudoUpdate, flush_cache)
 router.put('/accept/:id_kelas', auth_admin, controller.accept, flush_cache)
 router.delete('/delete/:id_kelas', auth_admin, controller.delete, flush_cache)
 
 // Mentor
 router.post('/insert', auth_mentor, controller.insert)
+router.get('/carisemua', auth_mentor, controller.carisemua)
+router.get('/select', auth_mentor, cache, controller.select)
 
 // Authenticated Mentor
 router.put('/update/:id_kelas', auth_mentor, authenticated_mentor, controller.update, flush_cache)
@@ -30,6 +31,7 @@ router.put('/update/:id_kelas', auth_mentor, authenticated_mentor, controller.up
 // Allias
 router.get('/:slug_kelas/meta', cache, controller.meta)
 router.get('/:slug_kelas', cache, controller.indexes)
+router.get('/:id_kelas/is_user_registred', auth, controller.is_registred)
 
 router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
 router.put('/:id_kelas/sudo/update', auth_admin, controller.sudoUpdate, flush_cache)
