@@ -10,11 +10,20 @@ const tempStorage = multer.diskStorage({
   filename: (req, file, cb) => {
     if (!req.internalUserId) return cb(new Error("User ID missing"), null);
 
-    const ext = path.extname(file.originalname);
-    const filename = `${req.internalUserId}_temp${ext}`;
+    const dir = "public/static";
+    const userId = req.internalUserId;
 
-    const filepath = path.join("public/static", filename);
-    if (fs.existsSync(filepath)) fs.unlinkSync(filepath); // replace old temp
+    // Remove any existing temp file for this user, regardless of extension
+    const pattern = new RegExp(`^${userId}_temp\\..+$`); 
+    fs.readdirSync(dir).forEach(f => {
+      if (pattern.test(f)) {
+        fs.unlinkSync(path.join(dir, f));
+      }
+    });
+
+    // Save new file with original extension
+    const ext = path.extname(file.originalname);
+    const filename = `${userId}_temp${ext}`;
     cb(null, filename);
   },
 });
@@ -36,26 +45,34 @@ exports.tempUploadFile = (req, res) => {
 // ----------------- Profile COMMIT TEMP TO MAIN (_pp) -----------------
 exports.commitTempFile = (req, res) => {
   let filename = req.body.filename;
-if (!filename) return res.status(400).json({ message: "Missing info" });
-  if (!req.internalUserId || !filename) 
+  const userId = req.internalUserId;
+
+  if (!filename || !userId) 
     return res.status(400).json({ message: "Missing info" });
 
   filename = filename.replace(/^\/static\//, '');
   const tempFile = path.join("public/static", filename);
   const ext = path.extname(filename);
-  const mainFile = path.join("public/static", `${req.internalUserId}_pp${ext}`);
+  const mainFile = path.join("public/static", `${userId}_pp${ext}`);
 
   if (!fs.existsSync(tempFile)) 
     return res.status(404).json({ message: "Temp file not found" });
 
-  // Remove old main file if exists
-  if (fs.existsSync(mainFile)) fs.unlinkSync(mainFile);
+  // Delete any old profile picture for this user, regardless of extension
+  const dir = "public/static";
+  const pattern = new RegExp(`^${userId}_pp\\..+$`);
+  fs.readdirSync(dir).forEach(f => {
+    if (pattern.test(f)) {
+      fs.unlinkSync(path.join(dir, f));
+    }
+  });
 
   // Rename temp → main
   fs.renameSync(tempFile, mainFile);
 
-  res.json({ message: "Profile picture committed", filename: `${req.internalUserId}_pp${ext}` });
+  res.json({ message: "Profile picture committed", filename: `${userId}_pp${ext}` });
 };
+
 
 // ----------------- TEMP THUMBNAIL UPLOAD -----------------
 const tempThmbnailStorage = multer.diskStorage({
