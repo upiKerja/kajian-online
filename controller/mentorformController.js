@@ -23,6 +23,7 @@ exports.carisemua = async (req, res, next) => {
 }
 
 exports.insert = async (req, res, next) => {
+    req.body.id_pengguna = req.internalUserId
     req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
