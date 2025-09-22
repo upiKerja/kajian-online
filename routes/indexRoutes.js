@@ -3,15 +3,16 @@ var { auth } = require('../middleware/auth')
 var { client } = require("../database/supabase");
 const { cache } = require('../middleware/cache');
 
-router.get("/login/:provider", async (req, res, next) => {
+router.get("/login", async (req, res, next) => {
     try {
         if (
             process.env.AUTH_PROVIDERS.split(",")
-            .indexOf(req.params.provider) !== -1
+            .indexOf(req.query.provider) !== -1
         ) {
             let redirect_url = process.env.SUPABASE_AUTH_URL
-                .replace("PROVIDER", req.params.provider)
+                .replace("PROVIDER", req.query.provider)
                 .replace("REDIRECT_TO", process.env.AUTH_REDIRECT_TO)
+            if (req.query.r == "true") return res.redirect(redirect_url)
             return res.send({
                 "msg" : "success",
                 "redirect_url" : redirect_url
