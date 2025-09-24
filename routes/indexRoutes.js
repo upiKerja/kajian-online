@@ -28,13 +28,13 @@ router.get("/login/:provider", async (req, res, next) => {
 })
 
 router.get("/profile", auth, cache, async (req, res) => {
-    const { data } = await client
+    const response = await client
         .from("pengguna")
-        .select("*, log_kelas(kelas(slug, judul, status, link_kelas))")
+        .select("*")
         .eq("id_pengguna", req.internalUserId)
         .single()
 
-    res.send(data)
+    res.send(response)
 })
 
 module.exports = router;
