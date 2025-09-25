@@ -7,7 +7,8 @@ exports.carisemua = async (req, res, next) => {
     let response = supabase.client
         .from(table)
         .select("*, pengguna(nama_lengkap, foto_url)")
-    
+        .order("created_at", { ascending: false })
+
     response = await (req.userRole == "mentor" ?
         response.eq("id_mentor", req.internalUserId) :
         response
@@ -58,6 +59,7 @@ exports.cari = async (req, res, next) => {
             type: "websearch",
             config: "english"
         })
+        .order("created_at", { ascending: false })
     response = await (req.query.full == "true" ?
         response :
         response.eq("is_accepted", true)

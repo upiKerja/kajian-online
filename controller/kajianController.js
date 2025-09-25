@@ -4,22 +4,12 @@ var table = "kajian"
 var table_id = "id_" + table
 
 exports.carisemua = async (req, res, next) => {
-    const { data, error } = await supabase.client
+    const response = await supabase.client
         .from(table)
         .select("*, kajian_kategori(slug, nama)")
+        .order("created_at", { ascending: false })
 
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        return res.status(404).send({
-            message: "data tidak ditemukan",
-            status: "failed",
-            error: error
-        })
-    }
-    return res.status(200).send({
-        message: "success",
-        status: "success",
-        data: data
-    })
+    return res.status(response.status).send(response)
 }
 
 exports.meta = async (req, res) => {
