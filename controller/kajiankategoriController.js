@@ -23,27 +23,19 @@ exports.carisemua = async (req, res, next) => {
 }
 
 exports.cari = async (req, res, next) => {
-    const { data, error } = await supabase.client
+    let response = supabase.client
         .from(table)
         .select("*")
-        .limit(10)
-        .textSearch("nama", req.query.q, {
+        .limit(10 || req.query.limit)
+        .textSearch("judul", req.query.q, {
             type: "websearch",
             config: "english"
         })
-    
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        return res.status(404).send({
-            message: "data tidak ditemukan",
-            status: "failed",
-            error: error
-        })
-    }
-    return res.status(200).send({
-        message: "success",
-        status: "success",
-        error: data
-    })
+    response = await (req.query.full == "true" ?
+        response :
+        response.eq("is_accepted", true)
+    )
+    return res.status(response.status).send(response)
 }
 
 exports.select = async (req, res) => {

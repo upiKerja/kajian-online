@@ -50,16 +50,18 @@ exports.accept = async(req, res, next) => {
 }
 
 exports.cari = async (req, res, next) => {
-    const response = await supabase.client
+    let response = supabase.client
         .from(table)
-        .select("judul, slug, pengguna(nama_lengkap, foto_url)")
-        .eq("is_accepted", true)
-        .limit(10)
+        .select("*, pertemuan_kelas(count), pengguna(nama_lengkap, foto_url)")
+        .limit(10 || req.query.limit)
         .textSearch("judul", req.query.q, {
             type: "websearch",
             config: "english"
         })
-
+    response = await (req.query.full == "true" ?
+        response :
+        response.eq("is_accepted", true)
+    )
     return res.status(response.status).send(response)
 }
 

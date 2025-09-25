@@ -30,16 +30,18 @@ exports.accept = async (req, res) => {
 }
 
 exports.cari = async (req, res, next) => {
-    const response = await supabase.client
+    let response = supabase.client
         .from(table)
-        .select("nama_program, slug, id_program_donasi, deskripsi")
-        .eq("is_accepted", true)
-        .limit(10)
-        .textSearch("nama_program", req.query.q, {
+        .select("*")
+        .limit(10 || req.query.limit)
+        .textSearch("judul", req.query.q, {
             type: "websearch",
             config: "english"
         })
-
+    response = await (req.query.full == "true" ?
+        response :
+        response.eq("is_accepted", true)
+    )
     return res.status(response.status).send(response)
 }
 
