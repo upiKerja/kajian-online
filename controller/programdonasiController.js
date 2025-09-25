@@ -14,7 +14,7 @@ exports.carisemua = async (req, res, next) => {
 exports.discover = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("nama_program, slug, id_program_donasi, deskripsi")
+        .select("nama_program, slug, id_program_donasi, deskripsi, gambar")
         .limit(req.query.limit || 20)
 
     return res.status(response.status).send(response)
