@@ -3,9 +3,15 @@ const router = express.Router();
 const controller = require("../controller/mentorformController")
 const { cache } = require("../middleware/cache");
 const { auth_admin, auth } = require("../middleware/auth")
+const { main_uploader } = require("../controller/fileuploadController");
 
 // User
-router.post('/insert', auth, controller.insert)
+router.post(
+    '/insert',
+    auth,
+    main_uploader.single("cv"),
+    controller.insert,
+)
 router.get('/mine', auth, controller.indexes)
 
 // Admin
