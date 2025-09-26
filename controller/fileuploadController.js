@@ -2,6 +2,38 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
+const file_filter = (req, file, cb) => {
+    const exts = [
+      ".png", ".jpeg", ".jpg",
+      ".docx", ".doc"
+    ]
+    if (
+      exts.indexOf(path.extname(file.originalname)) != -1
+    ) return cb(null, true)
+    cb(null, false)
+}
+
+const main_storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/static/")
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    const filename = `upi-${uniqueSuffix}${ext}`;
+    cb(null, filename);
+  }
+})
+const main_upload = multer({
+  storage: main_storage,
+  fileFilter: file_filter
+})
+
+exports.main_upp_middleware = main_upload.single("file")
+exports.main_upp = async (req, res) => {
+  return res.json(req.file)
+}
+
 // ----------------- Profile TEMP UPLOAD -----------------
 const tempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
