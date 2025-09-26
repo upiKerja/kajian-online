@@ -90,3 +90,59 @@ exports.flush_cache = async (req, res, next) => {
         }
     }
 }
+/*
+    Ini make Cursor ygy.
+*/
+exports.notify_pertemuan_kelas = async (req, res, next) => {
+    console.log("RIJAL")
+    const supabase = require("../database/supabase").client;
+    try {
+        // Check if this is a successful POST request for pertemuan_kelas creation
+        if (
+            req.method === "POST" && 
+            req.originalUrl.includes("/kelas/pertemuan/insert") &&
+            res.statusCode >= 200 && 
+            res.statusCode < 300
+        ) {
+            const id_kelas = req.params.id_kelas;
+            const pertemuanData = res.locals.pertemuanData || req.body;
+            
+            // Get all registered users for this class
+            const { data: registeredUsers, error: usersError } = await supabase
+                .from("log_kelas")
+                .select("id_pengguna, kelas(judul)")
+                .eq("id_kelas", id_kelas);
+
+            if (usersError) {
+                console.error("Error fetching registered users:", usersError);
+                return next();
+            }
+
+            if (registeredUsers && registeredUsers.length > 0) {
+                // Create notifications for all registered users
+                const notifications = registeredUsers.map(user => ({
+                    to: user.id_pengguna,
+                    title: "Pertemuan Baru",
+                    message: `Pertemuan baru "${pertemuanData.judul}" telah ditambahkan ke kelas "${user.kelas.judul}"`,
+                    type: "new_pertemuan",
+                    is_read: false
+                }));
+
+                // Insert notifications in batch
+                const { error: notificationError } = await supabase
+                    .from("notifications")
+                    .insert(notifications);
+
+                if (notificationError) {
+                    console.error("Error creating notifications:", notificationError);
+                } else {
+                    console.log(`Notifications sent to ${notifications.length} users for new pertemuan_kelas`);
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Notification middleware error:", err);
+    }
+    
+    next();
+};

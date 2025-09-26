@@ -51,14 +51,16 @@ exports.insert = async (req, res, next) => {
         return res.status(400).send()
     }
     req.body.id_kelas = req.params.id_kelas
-    req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     
     let response = await supabase
         .from("pertemuan_kelas")
         .insert(req.body)
         .single()
 
-    return res.status(response.status).send(response)       
+    // Store response data for middleware
+    res.locals.pertemuanData = response.data;
+    res.status(response.status).send(response)       
+    next()
 }
 
 exports.delete = async (req, res) => {
@@ -71,8 +73,6 @@ exports.delete = async (req, res) => {
 }
 
 exports.update = async (req, res, next) => {
-    if (req.body.judul) 
-        req.body.slug = req.body.judul.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     const {id_pertemuan_kelas, id_pengguna, id_kelas, ...inih} = req.body
     let response = await supabase
         .from("pertemuan_kelas")
