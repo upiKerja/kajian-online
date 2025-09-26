@@ -20,13 +20,14 @@ exports.discover = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
-exports.accept = async (req, res) => {
-    const response = await supabase.client
+exports.accept = async (req, res, next) => {
+    req.abudabi = await supabase.client
         .from(table)
         .update({is_accepted: true})
         .eq("id_program_donasi", req.params.id_program_donasi)
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
 exports.cari = async (req, res, next) => {
@@ -64,41 +65,44 @@ exports.indexes = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
     if (req.body.nama_program) {
         req.body.slug = req.body.nama_program.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     }
 
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .update(req.body)
         .eq(table_id, req.params.id_program_donasi)
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
 
-exports.insert = async (req, res) => {
+exports.insert = async (req, res, next) => {
     if (req.body.nama_program) {
         req.body.slug = req.body.nama_program.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     }
 
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
         .select("*")
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
-exports.delete = async (req, res) => {
-    const response = await supabase.client
+exports.delete = async (req, res, next) => {
+    req.abudabi = await supabase.client
         .from(table)
         .delete()
         .eq(table_id, req.params.id)
         .select("*")
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 };
 
 exports.donasi = async (req, res) => {
