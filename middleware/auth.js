@@ -5,8 +5,8 @@ var cache = require("./cache").get_or_set_for_auth
 
 const baseAuth = async (req, res, next, roleCheck = null) => {
   try {
+    let userData;
     const user = jwt.verify(req.cookies.access_token, process.env.SUPABASE_JWT_KEY);
-    
     const role = await cache(req, user.sub, async () => {
       return await supabase
         .from("pengguna")
@@ -32,6 +32,19 @@ const baseAuth = async (req, res, next, roleCheck = null) => {
     req.user = user.user_metadata;
     req.internalUserId = user.sub;
     req.userRole = role;
+    userData = {
+      id: user.sub,
+      role: role
+    }
+    res.cookie(
+      "auic",
+      jwt.sign(userData, process.env.AUIC_KEY, { expiresIn: '1h' }),
+      {
+        httpOnly: false,
+        sameSite: 'Lax'
+      }
+    )
+
     next();
 
   } catch (err) {

@@ -69,6 +69,8 @@ exports.get_or_set_for_auth = async (req, key, val) => {
 
 exports.flush_cache = async (req, res, next) => { 
     const redis = req.app.locals.redis
+    console.log(req.method)
+    console.log(req.abudabi.status)
     if (redis) {
         let splited = req.originalUrl.split("/")
         let rijal = splited[1] == "api" ? splited[2] : splited[1]

@@ -6,8 +6,9 @@ var table_id = "id_" + table
 exports.carisemua = async (req, res, next) => {
     let response = supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url)")
-    
+        .select("*, log_kelas(count), pertemuan_kelas(count), pengguna(nama_lengkap)")
+        .order("created_at", { ascending: false })
+
     response = await (req.userRole == "mentor" ?
         response.eq("id_mentor", req.internalUserId) :
         response
@@ -50,16 +51,19 @@ exports.accept = async(req, res, next) => {
 }
 
 exports.cari = async (req, res, next) => {
-    const response = await supabase.client
+    let response = supabase.client
         .from(table)
-        .select("judul, slug, pengguna(nama_lengkap, foto_url)")
-        .eq("is_accepted", true)
-        .limit(10)
+        .select("*, log_kelas(count), pertemuan_kelas(count), pengguna(nama_lengkap, foto_url)")
+        .limit(10 || req.query.limit)
         .textSearch("judul", req.query.q, {
             type: "websearch",
             config: "english"
         })
-
+        .order("created_at", { ascending: false })
+    response = await (req.query.full == "true" ?
+        response :
+        response.eq("is_accepted", true)
+    )
     return res.status(response.status).send(response)
 }
 

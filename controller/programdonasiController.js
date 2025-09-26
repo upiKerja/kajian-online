@@ -14,32 +14,35 @@ exports.carisemua = async (req, res, next) => {
 exports.discover = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("nama_program, slug, id_program_donasi, deskripsi")
+        .select("nama_program, slug, id_program_donasi, deskripsi, gambar")
         .limit(req.query.limit || 20)
 
     return res.status(response.status).send(response)
 }
 
-exports.accept = async (req, res) => {
-    const response = await supabase.client
+exports.accept = async (req, res, next) => {
+    req.abudabi = await supabase.client
         .from(table)
         .update({is_accepted: true})
         .eq("id_program_donasi", req.params.id_program_donasi)
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
 exports.cari = async (req, res, next) => {
-    const response = await supabase.client
+    let response = supabase.client
         .from(table)
-        .select("nama_program, slug, id_program_donasi, deskripsi")
-        .eq("is_accepted", true)
-        .limit(10)
-        .textSearch("nama_program", req.query.q, {
+        .select("*")
+        .limit(10 || req.query.limit)
+        .textSearch("judul", req.query.q, {
             type: "websearch",
             config: "english"
         })
-
+    response = await (req.query.full == "true" ?
+        response :
+        response.eq("is_accepted", true)
+    )
     return res.status(response.status).send(response)
 }
 
@@ -62,41 +65,44 @@ exports.indexes = async (req, res) => {
     return res.status(response.status).send(response)
 }
 
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
     if (req.body.nama_program) {
         req.body.slug = req.body.nama_program.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     }
 
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .update(req.body)
         .eq(table_id, req.params.id_program_donasi)
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
 
-exports.insert = async (req, res) => {
+exports.insert = async (req, res, next) => {
     if (req.body.nama_program) {
         req.body.slug = req.body.nama_program.replace(/[?&]/g, "").toLowerCase().trim().replaceAll(" ", "-")
     }
 
-    const response = await supabase.client
+    req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
         .select("*")
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 }
 
-exports.delete = async (req, res) => {
-    const response = await supabase.client
+exports.delete = async (req, res, next) => {
+    req.abudabi = await supabase.client
         .from(table)
         .delete()
         .eq(table_id, req.params.id)
         .select("*")
 
-    return res.status(response.status).send(response)
+    res.status(req.abudabi.status).send(req.abudabi)
+    next()
 };
 
 exports.donasi = async (req, res) => {
