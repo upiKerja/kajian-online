@@ -36,3 +36,10 @@ router.get("/test", (req, res) => {
 });
 
 module.exports = router;
+
+router.post(
+  "/upload",
+  authMiddleware.auth,
+  fileController.main_upp_middleware,
+  fileController.main_upp
+)
