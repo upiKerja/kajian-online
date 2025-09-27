@@ -38,4 +38,47 @@ router.get("/profile", auth, cache, async (req, res) => {
     res.send(response)
 })
 
+router.get("/stats", cache, async (req, res) => {
+    try {
+        // Get total program donasi
+        const totalProgramResponse = await client
+            .from("program_donasi")
+            .select("*", { count: "exact", head: true })
+
+        // Get total donasi terkumpul and total donatur
+        const donasiResponse = await client
+            .from("donasi")
+            .select("nominal, id_pengguna")
+
+        let totalDonasiTerkumpul = 0;
+        let uniqueDonatur = new Set();
+
+        if (donasiResponse.data && donasiResponse.data.length > 0) {
+            donasiResponse.data.forEach(donasi => {
+                totalDonasiTerkumpul += donasi.nominal;
+                uniqueDonatur.add(donasi.id_pengguna);
+            });
+        }
+
+        const stats = {
+            total_program_donasi: totalProgramResponse.count || 0,
+            total_donasi_terkumpul: totalDonasiTerkumpul,
+            total_donatur: uniqueDonatur.size
+        };
+
+        res.status(200).send({
+            status: 200,
+            statusText: "OK",
+            data: stats
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal Server Error",
+            error: error.message
+        });
+    }
+})
+
 module.exports = router;
