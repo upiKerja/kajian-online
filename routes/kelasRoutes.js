@@ -16,6 +16,7 @@ router.post('/daftar/:id_kelas', auth, controller.daftar)
 router.get('/is_user_registred/:id_kelas', auth, controller.is_registred)
 
 // Admin
+router.get('/stats', auth_admin, cache, controller.stats)
 router.put('/sudo/update/:id_kelas', auth_admin, controller.sudoUpdate, flush_cache)
 router.put('/accept/:id_kelas', auth_admin, controller.accept, flush_cache)
 router.delete('/delete/:id_kelas', auth_admin, controller.delete, flush_cache)

@@ -190,3 +190,38 @@ exports.pertemuan_kelas = async (req, res) => {
 
     return res.status(response.status).send(response)        
 }
+
+exports.stats = async (req, res) => {
+    try {
+        // Get all kelas with is_accepted field
+        const kelasResponse = await supabase.client
+            .from(table)
+            .select("is_accepted")
+
+        let totalKelas = 0;
+        let totalKelasAktif = 0;
+
+        if (kelasResponse.data && kelasResponse.data.length > 0) {
+            totalKelas = kelasResponse.data.length;
+            totalKelasAktif = kelasResponse.data.filter(kelas => kelas.is_accepted === true).length;
+        }
+
+        const stats = {
+            total_kelas: totalKelas,
+            total_kelas_aktif: totalKelasAktif
+        };
+
+        res.status(200).send({
+            status: 200,
+            statusText: "OK",
+            data: stats
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal Server Error",
+            error: error.message
+        });
+    }
+};

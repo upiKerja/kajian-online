@@ -119,3 +119,38 @@ exports.delete = async (req, res, next) => {
     res.status(req.abudabi.status).send(req.abudabi)
     next()
 };
+
+exports.stats = async (req, res) => {
+    try {
+        // Get all kajian with is_accepted field
+        const kajianResponse = await supabase.client
+            .from(table)
+            .select("status")
+
+        let totalKajian = 0;
+        let totalKajianAktif = 0;
+
+        if (kajianResponse.data && kajianResponse.data.length > 0) {
+            totalKajian = kajianResponse.data.length;
+            totalKajianAktif = kajianResponse.data.filter(kajian => kajian.status === "aktif").length;
+        }
+
+        const stats = {
+            total_kajian: totalKajian,
+            total_kajian_aktif: totalKajianAktif
+        };
+
+        res.status(200).send({
+            status: 200,
+            statusText: "OK",
+            data: stats
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal Server Error",
+            error: error.message
+        });
+    }
+};

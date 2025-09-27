@@ -38,7 +38,7 @@ router.get("/profile", auth, cache, async (req, res) => {
     res.send(response)
 })
 
-router.get("/stats", cache, async (req, res) => {
+router.get("/donasi/stats", cache, async (req, res) => {
     try {
         // Get total program donasi
         const totalProgramResponse = await client
