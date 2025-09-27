@@ -84,7 +84,8 @@ exports.flush_cache = async (req, res, next) => {
                 if (
                     key.includes(req.abudabi.data.slug) ||
                     !key.includes("-") ||
-                    key.includes("id_" + rijal)
+                    key.includes("id_" + rijal) ||
+                    key.includes(rijal + "/stats")
                 ) redis.del(key).then(() => console.log("Cache Removed: " + key))
             })
         }
