@@ -35,7 +35,7 @@ exports.cari = async (req, res, next) => {
         .from(table)
         .select("*")
         .limit(10 || req.query.limit)
-        .textSearch("judul", req.query.q, {
+        .textSearch("nama_program", req.query.q, {
             type: "websearch",
             config: "english"
         })
