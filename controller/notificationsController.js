@@ -8,7 +8,7 @@ exports.my = async (req, res) => {
     const response = await supabase.client
         .from(table)
         .select("*")
-        .eq("id_pengguna", req.internalUserId)
+        .eq("to", req.internalUserId)
         .order("created_at", { ascending: false })
 
     return res.status(response.status).send(response)

@@ -34,7 +34,7 @@ exports.cari = async (req, res, next) => {
     let response = supabase.client
         .from(table)
         .select("*")
-        .limit(10 || req.query.limit)
+        .limit(10)
         .textSearch("nama_program", req.query.q, {
             type: "websearch",
             config: "english"
