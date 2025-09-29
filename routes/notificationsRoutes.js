@@ -5,7 +5,7 @@ const { cache } = require("../middleware/cache");
 const { auth, auth_admin } = require("../middleware/auth")
 
 // User
-router.get('/my', auth, cache, controller.my)
+router.get('/my', auth, controller.my)
 router.put('/read/:id_notification', auth, controller.markRead)
 
 // Admin

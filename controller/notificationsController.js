@@ -9,6 +9,7 @@ exports.my = async (req, res) => {
         .from(table)
         .select("*")
         .eq("to", req.internalUserId)
+        .eq("is_read", false)
         .order("created_at", { ascending: false })
 
     return res.status(response.status).send(response)
@@ -17,9 +18,9 @@ exports.my = async (req, res) => {
 exports.markRead = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .update({ is_read: true, read_at: new Date().toISOString() })
+        .update({ is_read: true })
         .eq(table_id, req.params.id_notification)
-        .eq("id_pengguna", req.internalUserId)
+        .eq("to", req.internalUserId)
         .select("*")
 
     return res.status(response.status).send(response)

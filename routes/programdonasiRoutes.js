@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require("../controller/programdonasiController")
 const { cache, flush_cache } = require("../middleware/cache");
 const { auth, auth_admin } = require("../middleware/auth")
+const { main_uploader } = require("../controller/fileuploadController");
 
 // Guess
 router.get('/index/:slug', cache, controller.indexes)
@@ -11,7 +12,12 @@ router.get('/discover', cache, controller.discover)
 router.get('/single', cache, controller.single)
 
 // User
-router.post('/donasi/:id_program_donasi', auth, controller.donasi)
+router.post(
+    '/donasi/:id_program_donasi',
+    auth,
+    main_uploader.single("bukti_donasi"),
+    controller.donasi
+)
 
 // Admin
 router.get('/select', auth_admin, controller.select)

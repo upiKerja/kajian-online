@@ -106,15 +106,25 @@ exports.delete = async (req, res, next) => {
 };
 
 exports.donasi = async (req, res) => {
-    const response = await supabase.client
-        .from("donasi")
-        .insert({
-            id_pengguna: req.internalUserId,
-            id_program_donasi: req.params.id_program_donasi,
-            nominal: req.body.nominal
-        })
+    if (req.file.is_upp) {
+        let abudabas = req.file.is_upp ? req.file.id : null    
+        const response = await supabase.client
+            .from("donasi")
+            .insert({
+                id_pengguna: req.internalUserId,
+                id_program_donasi: req.params.id_program_donasi,
+                nominal: req.body.nominal,
+                bukti_pembayaran_address: abudabas,
+                nama: req.body.nama,
+                doa: req.body.doa
+            })
+    
+        return res.status(response.status).send(response)
+    }
 
-    return res.status(response.status).send(response)
+    return res.status(400).send("Bukti pembayaran is required")
+
+
 }
 
 exports.inspect = async (req, res) => {
