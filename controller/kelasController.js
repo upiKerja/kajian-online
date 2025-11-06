@@ -115,6 +115,9 @@ exports.sudoUpdate = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     // Route Update khusus authenticated mentor
+    console.log(req.file)
+    if (req.file.is_upp)
+        req.body.thumbnail_file_address = req.file.id
 
     // Jaga-jaga kalo mau ngupdate Judul
     if (req.body.judul) {
@@ -122,18 +125,19 @@ exports.update = async (req, res, next) => {
     } 
 
     // Data yang gaboleh di Update
-    const {is_accepted, id_mentor, id_kelas, ...inih} = req.body
-    req.body = inih
-    req.body.is_accepted = false // Data yang udah diupdate harus di ACC lebih dulu ama Admin.
+    if (req.userRole != "admin") {
+        const {is_accepted, id_mentor, id_kelas, ...inih} = req.body
+        req.body = inih
+        req.body.is_accepted = false // Data yang udah diupdate harus di ACC lebih dulu ama Admin.
+    }
 
     req.abudabi = await supabase.client
         .from(table)
         .update(req.body)
         .eq(table_id, req.params.id_kelas)
-        .select("slug")
+        .select("*")
         .single()
 
-    res.status(req.abudabi.status).send(req.abudabi)
     next()
 }
 

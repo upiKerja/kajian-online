@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require("../controller/kelasController")
 const { cache, flush_cache } = require("../middleware/cache");
 const { auth, auth_mentor, authenticated_mentor, auth_admin } = require("../middleware/auth")
+const { main_upp_middleware, main_upp } = require("../controller/fileuploadController");
 
 // Guess
 router.get('/index/:slug_kelas', cache, controller.indexes)
@@ -27,7 +28,7 @@ router.get('/carisemua', auth_mentor, controller.carisemua)
 router.get('/select', auth_mentor, cache, controller.select)
 
 // Authenticated Mentor
-router.put('/update/:id_kelas', auth_mentor, authenticated_mentor, controller.update, flush_cache)
+// router.put('/update/:id_kelas', auth_mentor, authenticated_mentor, controller.update, flush_cache)
 
 // Allias
 router.get('/:slug_kelas/meta', cache, controller.meta)
@@ -35,9 +36,16 @@ router.get('/:slug_kelas', cache, controller.indexes)
 router.get('/:id_kelas/is_user_registred', auth, controller.is_registred)
 
 router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
-router.put('/:id_kelas/sudo/update', auth_admin, controller.sudoUpdate, flush_cache)
 router.put('/:id_kelas/accept', auth_admin, controller.accept, flush_cache)
-router.put('/:id_kelas/update', auth_mentor, authenticated_mentor, controller.update, flush_cache)
 router.delete('/:id_kelas/delete', auth_admin, controller.delete, flush_cache)
+router.put(
+    '/:id_kelas/update',
+    auth_mentor,
+    authenticated_mentor,
+    main_upp_middleware,
+    main_upp,
+    controller.update,
+    flush_cache
+)
 
 module.exports = router;

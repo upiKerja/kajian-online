@@ -6,13 +6,13 @@ const { auth_admin, auth } = require("../middleware/auth")
 const { main_uploader } = require("../controller/fileuploadController");
 
 // User
+router.get('/mine', auth, controller.indexes)
 router.post(
     '/insert',
     auth,
     main_uploader.single("cv"),
     controller.insert,
 )
-router.get('/mine', auth, controller.indexes)
 
 // Admin
 router.get('/carisemua', auth_admin, cache,  controller.carisemua)

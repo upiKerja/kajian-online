@@ -34,7 +34,8 @@ exports.carisemua = async (req, res, next) => {
 
 exports.insert = async (req, res, next) => {
     req.body.id_pengguna = req.internalUserId
-    if(req.file.is_upp) req.body.cv_file_address = req.file.id
+    if (req.file.is_upp)
+        req.body.cv_file_address = req.file.id
     req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
