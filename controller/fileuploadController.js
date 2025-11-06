@@ -4,11 +4,12 @@ const fs = require("fs");
 const supabase = require("../database/supabase")
 
 const anggap_aja_ini_middleware = async (req, file, cb) => {
+  console.log("RIJAL MAKAN NASI")
   let abadas = []
   req.astungkara = {}
   process.env.CORS_ALLOWED_DOMAINS.split(",").forEach(
     (domain) => {
-    if (req.headers.referer.startsWith(domain)) abadas.push(true)})
+    if (req.headers.referer.startsWith(domain)) abadas.push(true)})  
   if (
     abadas.indexOf(true) != -1 &&
     req.headers.referer &&
