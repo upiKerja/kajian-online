@@ -79,7 +79,7 @@ exports.select = async (req, res) => {
 exports.indexes = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url)")
+        .select("*, pengguna(nama_lengkap, foto_url), static_file_address(path, source, host)")
         .single()
         .eq("slug", req.params.slug_kelas)
 
@@ -115,7 +115,6 @@ exports.sudoUpdate = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     // Route Update khusus authenticated mentor
-    console.log(req.file)
     if (req.file.is_upp)
         req.body.thumbnail_file_address = req.file.id
 
@@ -138,6 +137,7 @@ exports.update = async (req, res, next) => {
         .select("*")
         .single()
 
+    res.status(req.abudabi.status).json(req.abudabi)
     next()
 }
 
@@ -153,7 +153,7 @@ exports.insert = async (req, res, next) => {
     req.abudabi = await supabase.client
         .from(table)
         .insert(req.body)
-        .select("slug")
+        .select("slug")        
 
     res.status(req.abudabi.status).send(req.abudabi)
     next()

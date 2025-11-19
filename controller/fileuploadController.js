@@ -1,45 +1,7 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const supabase = require("../database/supabase")
-
-const anggap_aja_ini_middleware = async (req, file, cb) => {
-  console.log("RIJAL MAKAN NASI")
-  let abadas = []
-  req.astungkara = {}
-  process.env.CORS_ALLOWED_DOMAINS.split(",").forEach(
-    (domain) => {
-    if (req.headers.referer.startsWith(domain)) abadas.push(true)})  
-  if (
-    abadas.indexOf(true) != -1 &&
-    req.headers.referer &&
-    req.headers["content-length"] <= 6 * 1_000_000 // Max 5 MB
-  ) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    const filename = `upi-${uniqueSuffix}${ext}`
-
-    let fileData = {
-      filename: filename,
-      path: "/static/" + filename,
-      assigner: req.internalUserId,
-      field: file.fieldname
-    }
-    const response = await supabase.client
-      .from("static_file_address")
-      .insert(fileData)
-      .select("id_static_file_address")
-      .single()
-
-    file.is_upp = true;
-    file.id = response.data.id_static_file_address
-    file.name = filename
-    file.path = "/static/" + filename
-
-    cb(null, true)
-  }
-  cb(null, false)
-}
+const { uppsertFileMiddleware, upploadFileMiddleware, baseAutoChange } = require("../middleware/file")
 
 const main_storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -52,7 +14,12 @@ const main_storage = multer.diskStorage({
 })
 exports.main_uploader = multer({
   storage: main_storage,
-  fileFilter: anggap_aja_ini_middleware
+  fileFilter: upploadFileMiddleware
+})
+
+exports.fileHandler = multer({
+  storage: main_storage,
+  fileFilter: uppsertFileMiddleware
 })
 
 exports.main_upp_middleware = this.main_uploader.single("file")
