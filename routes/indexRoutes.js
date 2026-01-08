@@ -1,3 +1,4 @@
+const path = require("path")
 var router = require('express').Router();
 var supabase = require("../database/supabase")
 var { auth } = require('../middleware/auth')
@@ -91,7 +92,7 @@ router.get("/.f/:id_static_file_address", async (req, res) => {
         .single()
 
     if (response.status >= 200 && response.status <= 300) {
-        fs.access('public/static/' + response.data.path, fs.constants.F_OK, (err) => {
+        fs.access(path.join(process.cwd(), 'public', response.data.path), fs.constants.F_OK, (err) => {
             if (err) {
                 if (req.query["img"] == "false") return res.status(404).send(404)
                 else return res.redirect("/src/assets/images/thumbnail-default.jpg")

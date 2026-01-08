@@ -79,7 +79,7 @@ exports.select = async (req, res) => {
 exports.indexes = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("*, pengguna(nama_lengkap, foto_url), static_file_address(path, source, host)")
+        .select("*, pengguna(nama_lengkap, foto_url), static_file_address(id_static_file_address, path, source, host)")
         .single()
         .eq("slug", req.params.slug_kelas)
 
