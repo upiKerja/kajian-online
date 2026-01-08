@@ -59,6 +59,9 @@ function validateErrorFile(req, file) {
 
 exports.baseHandlingChange = (fieldName) => {
   return async (req, res, next) => {
+    if (!req.file) {
+      return res.status(400).send(`Require field as file: ${fieldName}`)
+    }
     if (req.file.is_upp) {
       req.body[fieldName] = req.file.id
       return next()

@@ -1,7 +1,9 @@
 var router = require('express').Router();
+var supabase = require("../database/supabase")
 var { auth } = require('../middleware/auth')
 var { client } = require("../database/supabase");
 const { cache } = require('../middleware/cache');
+const fs = require('fs');
 
 router.get("/login", async (req, res, next) => {
     try {
@@ -80,5 +82,28 @@ router.get("/donasi/stats", cache, async (req, res) => {
         });
     }
 })
+
+router.get("/.f/:id_static_file_address", async (req, res) => {
+    const response = await supabase.client
+        .from("static_file_address")
+        .select("path")
+        .eq("id_static_file_address", req.params.id_static_file_address)
+        .single()
+
+    if (response.status >= 200 && response.status <= 300) {
+        fs.access('public/static/' + response.data.path, fs.constants.F_OK, (err) => {
+            if (err) {
+                if (req.query["img"] == "false") return res.status(404).send(404)
+                else return res.redirect("/src/assets/images/thumbnail-default.jpg")
+            } else {
+                return res.redirect(response.data.path)
+            }
+        })
+
+    } else {
+        return res.status(404).send("Invalid File Address")
+    }
+
+}) 
 
 module.exports = router;
