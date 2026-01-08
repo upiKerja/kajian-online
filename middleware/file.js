@@ -21,7 +21,14 @@ function deleteStaticFile(filename) {
   }
 }
 
+function isSuccessStatusCode(statusCode) {
+  return statusCode >= 200  && statusCode <= 400
+}
+
 function isValidReferer(referer) {
+  if (!referer) {
+    return false
+  }
   let abadas = []
   process.env.CORS_ALLOWED_DOMAINS.split(",").forEach(
     domain => {if (referer.startsWith(domain)) abadas.push(true)}
@@ -36,6 +43,7 @@ function generateFileName(originalname) {
 }
 
 // Tambahin lagi fiturnya plis.
+// Return true kalo ada error
 function validateErrorFile(req, file) {
   if (!isValidReferer(req.headers.referer)) {
     console.log("RIJAL")
@@ -43,9 +51,10 @@ function validateErrorFile(req, file) {
       status: true,
       message: "Invalid header"
     }
+    return true
   }
 
-  return file.error?.status ?? false
+  return false
 }
 
 exports.baseHandlingChange = (fieldName) => {
@@ -56,7 +65,7 @@ exports.baseHandlingChange = (fieldName) => {
     } else {
       return res.status(400).send(req.file?.error)
     }
-  }
+  } 
 }
 
 exports.baseAutoChange = (tableName, fieldName, idParamsValue) => {
@@ -67,10 +76,15 @@ exports.baseAutoChange = (tableName, fieldName, idParamsValue) => {
         .from(tableName)
         .update(req.body)
         .eq(idParamsValue, req.params[idParamsValue])
+
+      if (isSuccessStatusCode(response.status)) {
+        res.status(response.status).send(response)
+      }
       
-      return res.status(response.status).send(response)
-    } else {
+    } else if(req.file?.error) {
       return res.status(400).send(req.file.error)
+    } else {
+      return res.status(403).send("Invalid Request")
     }
 
   }
@@ -89,6 +103,23 @@ exports.uppsertFileMiddleware = async (req, file, cb) => {
   }
 
   const filename = generateFileName(file.originalname)
+  const prevFile = await supabase.client
+    .from("static_file_address")
+    .select("filename")
+    .eq("id_static_file_address", id_file)
+    .single()
+
+  if (isSuccessStatusCode(prevFile.status)) {
+    console.log("Deleting: ", prevFile.data.filename)
+    deleteStaticFile(prevFile.data.filename)
+  } else {
+    file.error = {
+      status: true,
+      message: "The server does not contains previous file."
+    }
+    return cb(null, false)
+  }
+
   const response = await supabase.client
     .from("static_file_address")
     .update({

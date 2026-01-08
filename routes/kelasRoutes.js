@@ -50,7 +50,7 @@ router.put(
     '/:id_kelas/thumbnail/:id_file',
     auth_mentor,
     authenticated_mentor,
-    fileHandler.single("file"),
+    fileHandler.single("thumbnail"),
     baseAutoChange("kelas", "thumbnail_file_address", "id_kelas")
 )
 
@@ -58,7 +58,6 @@ router.put(
     '/:id_kelas/update',
     auth_mentor,
     authenticated_mentor,
-    fileHandler.single("thumbnail_kelas"),
     controller.update,
     flush_cache
 )

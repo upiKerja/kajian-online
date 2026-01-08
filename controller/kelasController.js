@@ -70,7 +70,7 @@ exports.cari = async (req, res, next) => {
 exports.select = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("*")
+        .select("*, static_file_address(id_static_file_address, path)")
         .eq(req.query.w, req.query.eq)
 
     return res.status(response.status).send(response)
@@ -115,8 +115,6 @@ exports.sudoUpdate = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     // Route Update khusus authenticated mentor
-    if (req.file.is_upp)
-        req.body.thumbnail_file_address = req.file.id
 
     // Jaga-jaga kalo mau ngupdate Judul
     if (req.body.judul) {
