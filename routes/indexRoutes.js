@@ -102,7 +102,7 @@ router.get("/.f/:id_static_file_address", async (req, res) => {
         })
 
     } else {
-        return res.status(404).send("Invalid File Address")
+        return res.redirect("/src/assets/images/thumbnail-default.jpg")
     }
 
 }) 
