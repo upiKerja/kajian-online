@@ -55,6 +55,14 @@ router.put(
 )
 
 router.put(
+    '/thumbnail/:id_file',
+    auth_mentor,
+    authenticated_mentor,
+    fileHandler.single("thumbnail"),
+    baseAutoChange("")
+)
+
+router.put(
     '/:id_kelas/update',
     auth_mentor,
     authenticated_mentor,

@@ -35,4 +35,11 @@ router.put(
     baseAutoChange("kajian", "id_thumbnail_address", "id_kajian")
 )
 
+router.put(
+    '/thumbnail/:id_file',
+    auth_admin,
+    fileHandler.single("thumbnail"),
+    baseAutoChange("")
+)
+
 module.exports = router;

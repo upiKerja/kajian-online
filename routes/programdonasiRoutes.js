@@ -3,7 +3,8 @@ const router = express.Router();
 const controller = require("../controller/programdonasiController")
 const { cache, flush_cache } = require("../middleware/cache");
 const { auth, auth_admin } = require("../middleware/auth")
-const { main_uploader } = require("../controller/fileuploadController");
+const { fileHandler, main_uploader } = require("../controller/fileuploadController");
+const { baseHandlingChange, baseAutoChange } = require("../middleware/file")
 
 // Guess
 router.get('/index/:slug', cache, controller.indexes)
@@ -25,8 +26,23 @@ router.get('/carisemua', auth_admin, controller.carisemua)
 router.get('/inspect/:id_program_donasi', auth_admin, controller.inspect)
 router.put('/update/:id_program_donasi', auth_admin, controller.update, flush_cache)
 router.put('/accept/:id_program_donasi', auth_admin, controller.accept, flush_cache)
-router.post('/insert', auth_admin, controller.insert, flush_cache)
+// router.post('/insert', auth_admin, controller.insert, flush_cache)
 router.delete('/delete/:id_program_donasi', auth_admin, controller.delete, flush_cache)
+
+router.post(
+    '/insert',
+    auth_admin,
+    main_uploader.single("thumbnail"),
+    baseHandlingChange("id_static_file_address"),
+    controller.insert
+)
+
+router.put(
+    '/thumbnail/:id_file',
+    auth_admin,
+    fileHandler.single("thumbnail"),
+    baseAutoChange("")
+)
 
 // Allias
 router.get('/:slug', cache, controller.indexes)

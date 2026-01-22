@@ -74,16 +74,7 @@ exports.baseHandlingChange = (fieldName) => {
 exports.baseAutoChange = (tableName, fieldName, idParamsValue) => {
   return async (req, res, next) => {
     if (req.file?.is_upp) {
-      req.body[fieldName] = req.file.id
-      let response = await supabase.client
-        .from(tableName)
-        .update(req.body)
-        .eq(idParamsValue, req.params[idParamsValue])
-
-      if (isSuccessStatusCode(response.status)) {
-        res.status(response.status).send(response)
-      }
-      
+      return res.status(200).send("Base Auto Change")
     } else if(req.file?.error) {
       return res.status(400).send(req.file.error)
     } else {
