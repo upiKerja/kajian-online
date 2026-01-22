@@ -45,7 +45,7 @@ exports.cari = async (req, res, next) => {
 exports.select = async (req, res) => {
     const { error, data } = await supabase.client
     .from(table)
-    .select("*")
+    .select("*, static_file_address(id_static_file_address, path)")
     .eq(req.query.w, req.query.eq)
 
     if (data === null || (Array.isArray(data) && data.length === 0)) {
@@ -65,7 +65,7 @@ exports.select = async (req, res) => {
 exports.indexes = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("*")
+        .select("*, static_file_address(id_static_file_address, path, source, host)")
         .eq("slug", req.params.slug_kajian)
         .single()
 
