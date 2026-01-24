@@ -31,7 +31,7 @@ exports.is_registred = async (req, res) => {
 exports.discover = async (req, res) => {
     const response = await supabase.client
         .from("kelas")
-        .select("*, pengguna(nama_lengkap, foto_url)")
+        .select("*, pengguna(nama_lengkap, foto_url), static_file_address(id_static_file_address)")
         .eq("is_accepted", true)
         .limit(req.query.limit || 20)
 

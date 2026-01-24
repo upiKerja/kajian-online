@@ -75,7 +75,7 @@ exports.indexes = async (req, res) => {
 exports.discover = async (req, res) => {
     const response = await supabase.client
         .from(table)
-        .select("*")
+        .select("*, static_file_address(id_static_file_address)")
         .limit(req.query.limit || 20)
 
     return res.status(response.status).send(response)
