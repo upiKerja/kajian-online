@@ -3,11 +3,12 @@ const controller = require("../controller/pertemuanKelasController.js")
 const { auth, auth_mentor, authenticated_mentor } = require("../middleware/auth.js")
 const { notify_pertemuan_kelas } = require("../middleware/cache.js")
 
+// Auth Mentor
+router.get("/me", auth_mentor, controller.me)
+router.get("/:id_pertemuan_kelas/m", auth_mentor, controller.index_m)
+
 // Registred User
 router.get("/:id_pertemuan_kelas", auth, controller.index)
-
-// Auth Mentor
-router.get("/:id_pertemuan_kelas/m", auth_mentor, controller.index_m)
 
 // Authenticated Mentor
 router.post("/insert/:id_kelas", auth_mentor, authenticated_mentor, controller.insert, notify_pertemuan_kelas)

@@ -44,6 +44,7 @@ router.get('/:id_kelas/is_user_registred', auth, controller.is_registred)
 
 router.get('/:id_kelas/pertemuan', controller.pertemuan_kelas)
 router.put('/:id_kelas/accept', auth_admin, controller.accept, flush_cache)
+router.put('/:id_kelas/sudo/update', auth_admin, controller.sudoUpdate, flush_cache)
 router.delete('/:id_kelas/delete', auth_admin, controller.delete, flush_cache)
 
 router.put(

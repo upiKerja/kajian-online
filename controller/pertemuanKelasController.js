@@ -46,6 +46,15 @@ exports.index_m = async(req, res) => {
     return res.status(response.status).send(response)        
 }
 
+exports.me = async(req, res) => {
+    let response = await supabase
+        .from("pertemuan_kelas")
+        .select("judul, deskripsi, created_at, tipe_pertemuan, kelas(id_kelas, slug, judul)")
+        .eq("kelas.id_mentor", "3913a307-f4f8-44be-be92-dce35ee74305") // TODO: Ganti ke req.internalUserId setelah ini.
+
+    return res.status(response.status).send(response)
+}
+
 exports.insert = async (req, res, next) => {
     if (!req.body.judul) {
         return res.status(400).send()
