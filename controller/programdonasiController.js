@@ -79,6 +79,23 @@ exports.update = async (req, res, next) => {
     next()
 }
 
+exports.acceptDonasi = async (req, res) => {
+    const response = await supabase.client
+        .from("donasi")
+        .update({"is_valid": true})
+        .eq("id_donasi", req.params.id_donasi)
+    
+    return res.status(response.status).send(response)
+}
+
+exports.inspectDonatur = async (req, res) => {
+    const response = await supabase.client
+        .from("donasi")
+        .select("*")
+        .eq("id_program_donasi", req.params.id_program_donasi)
+
+    return res.status(response.status).send(response)        
+}
 
 exports.insert = async (req, res, next) => {
     if (req.body.nama_program) {

@@ -26,8 +26,19 @@ router.get('/carisemua', auth_admin, controller.carisemua)
 router.get('/inspect/:id_program_donasi', auth_admin, controller.inspect)
 router.put('/update/:id_program_donasi', auth_admin, controller.update, flush_cache)
 router.put('/accept/:id_program_donasi', auth_admin, controller.accept, flush_cache)
-// router.post('/insert', auth_admin, controller.insert, flush_cache)
 router.delete('/delete/:id_program_donasi', auth_admin, controller.delete, flush_cache)
+
+router.get(
+    '/:id_program_donasi/donatur',
+    auth_admin,
+    controller.inspectDonatur
+)
+
+router.put(
+    '/:id_program_donasi/donatur/:id_donasi/accept',
+    auth_admin,
+    controller.acceptDonasi
+)
 
 router.post(
     '/insert',
