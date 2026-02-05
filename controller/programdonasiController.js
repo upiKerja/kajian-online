@@ -149,6 +149,7 @@ exports.inspect = async (req, res) => {
         .from("donasi")
         .select("nominal, pengguna(nama_lengkap)", { count: "exact" })
         .eq("id_program_donasi", req.params.id_program_donasi)
+        .eq("is_valid", true)
 
     let result = 0;
     let donatur = [];    
