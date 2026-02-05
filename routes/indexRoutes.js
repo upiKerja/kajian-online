@@ -52,6 +52,7 @@ router.get("/donasi/stats", cache, async (req, res) => {
         const donasiResponse = await client
             .from("donasi")
             .select("nominal, id_pengguna")
+            .eq("is_valid", true)
 
         let totalDonasiTerkumpul = 0;
         let uniqueDonatur = new Set();
